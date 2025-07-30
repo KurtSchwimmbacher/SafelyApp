@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
-import LandingScreen from './screens/LandingScreen';
+import CreateTimer from './screens/CreateTimer';
 
 import {
   useFonts as useYesevaFonts,
@@ -24,8 +24,9 @@ export default function App() {
 
   const fontsLoaded = yesevaLoaded && josefinLoaded;
   if (!fontsLoaded) return null; 
+  
   return (
-    <LandingScreen />
+    <CreateTimer />
   );
 }
 
