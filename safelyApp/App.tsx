@@ -1,12 +1,31 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+import LandingScreen from './screens/LandingScreen';
+
+import {
+  useFonts as useYesevaFonts,
+  YesevaOne_400Regular,
+} from '@expo-google-fonts/yeseva-one';
+import {
+  useFonts as useJosefinFonts,
+  JosefinSans_400Regular,
+  JosefinSans_700Bold,
+  JosefinSans_300Light,
+} from '@expo-google-fonts/josefin-sans';
 
 export default function App() {
+
+  const [yesevaLoaded] = useYesevaFonts({ YesevaOne_400Regular });
+  const [josefinLoaded] = useJosefinFonts({
+    JosefinSans_300Light,
+    JosefinSans_400Regular,
+    JosefinSans_700Bold,
+  });
+
+  const fontsLoaded = yesevaLoaded && josefinLoaded;
+  if (!fontsLoaded) return null; 
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <LandingScreen />
   );
 }
 
