@@ -33,9 +33,9 @@ export const Typography = {
     
   },
   subtitle: {
-    fontSize: 20,
-    fontWeight: 500,
+    fontSize: 24,
     color: Colors.midDark,
+    fontFamily: 'JosefinSans_400Regular',
   },
   body: {
     fontSize: 16,

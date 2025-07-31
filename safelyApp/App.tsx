@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
-import CreateTimer from './screens/CreateTimer';
+
 
 import {
   useFonts as useYesevaFonts,
@@ -13,6 +13,7 @@ import {
   JosefinSans_300Light,
 } from '@expo-google-fonts/josefin-sans';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import LandingScreen from './screens/LandingScreen';
 
 export default function App() {
 
@@ -28,7 +29,7 @@ export default function App() {
   
   return (
      <GestureHandlerRootView style={{ flex: 1 }}>
-      <CreateTimer />
+      <LandingScreen />
     </GestureHandlerRootView>
   );
 }

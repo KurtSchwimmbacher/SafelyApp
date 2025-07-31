@@ -1,5 +1,7 @@
 import React from 'react';
-import { Modal, View, Text, Pressable, StyleSheet } from 'react-native';
+import { Modal, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Colors, GlobalStyles, Radius, Spacing, Typography } from '../styles/GlobalStyles';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 interface LoginModalProps {
   visible: boolean;
@@ -7,23 +9,37 @@ interface LoginModalProps {
 }
 
 export default function LoginModal({ visible, onClose }: LoginModalProps) {
-  return (
-    <Modal
-      visible={visible}
-      animationType="slide"
-      transparent
-      onRequestClose={onClose}
-    >
-      <View style={styles.overlay}>
-        <View style={styles.content}>
-          <Text style={styles.title}>Login</Text>
-          {/* Add your login form here */}
-          <Pressable onPress={onClose}>
-            <Text style={styles.link}>Close</Text>
-          </Pressable>
-        </View>
-      </View>
-    </Modal>
+    return (
+        <Modal
+            visible={visible}
+            animationType="slide"
+            transparent
+            onRequestClose={onClose}
+        >
+
+            <View style={styles.overlay}>
+                <View style={styles.content}>
+
+                    {/* header */}
+                    <View style={styles.header}>
+                        {/* spacer to balance the close icon */}
+                        <View style={styles.sideSpacer} />
+                        <Text style={[Typography.body, styles.headerTitle, { color: Colors.primaryLight }]}>Login</Text>
+                        <TouchableOpacity
+                            onPress={onClose}
+                            style={styles.closeButton}
+                        >
+                            <MaterialCommunityIcons name="close" size={24} color={Colors.primaryLight} />
+                        </TouchableOpacity>
+                    </View>
+
+                    {/* Body content */}
+                    <View style={{ padding: Spacing.xl }}>
+                        
+                    </View>
+                </View>
+            </View>
+        </Modal>
   );
 }
 
@@ -34,18 +50,30 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.5)',
   },
   content: {
-    backgroundColor: 'white',
-    padding: 24,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    minHeight: 300,
+    backgroundColor: Colors.white,
+    borderTopLeftRadius: Radius.lg,
+    borderTopRightRadius: Radius.lg,
+    minHeight: 800,
+    overflow: 'hidden',
   },
-  title: {
-    fontSize: 24,
-    marginBottom: 20,
+  header: {
+    height: Spacing.xl*2,
+    backgroundColor: Colors.white,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderBottomWidth: 1,
+    borderColor: Colors.light,
+    paddingHorizontal: Spacing.lg,
   },
-  link: {
-    color: '#1e90ff',
-    marginTop: 20,
+  headerTitle:{
+    flex: 1,
+    textAlign: 'center',
   },
+  closeButton: {
+    padding: Spacing.sm,
+  },
+  sideSpacer: {
+  width: 32, // Same width as the close icon area for symmetry
+    },
 });
