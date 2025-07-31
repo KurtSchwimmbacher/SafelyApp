@@ -3,8 +3,7 @@ import { Colors, GlobalStyles, Spacing, Typography } from "../../styles/GlobalSt
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 
-
-const LoginForm = () => {
+const RegisterForm = () => {
 
     return (
         <View style={GlobalStyles.container}>
@@ -20,6 +19,14 @@ const LoginForm = () => {
             <TextInput
                 style={styles.inputField}
                 placeholder="Password"
+                secureTextEntry={true}
+                // onChangeText={newText => setEmail(newText)}
+                // defaultValue={email}
+            />
+
+            <TextInput
+                style={styles.inputField}
+                placeholder="Confirm Password"
                 secureTextEntry={true}
                 // onChangeText={newText => setEmail(newText)}
                 // defaultValue={email}
@@ -64,7 +71,7 @@ const LoginForm = () => {
 
 }
 
-export default LoginForm;
+export default RegisterForm;
 
 const styles = StyleSheet.create({
 
