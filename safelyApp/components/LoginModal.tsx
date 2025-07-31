@@ -2,6 +2,7 @@ import React from 'react';
 import { Modal, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Colors, GlobalStyles, Radius, Spacing, Typography } from '../styles/GlobalStyles';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import LoginForm from './formComponents/LoginForm';
 
 interface LoginModalProps {
   visible: boolean;
@@ -33,9 +34,9 @@ export default function LoginModal({ visible, onClose }: LoginModalProps) {
                         </TouchableOpacity>
                     </View>
 
-                    {/* Body content */}
-                    <View style={{ padding: Spacing.xl }}>
-                        
+                    {/* Login Form */}
+                    <View style={GlobalStyles.container}>
+                        <LoginForm />
                     </View>
                 </View>
             </View>

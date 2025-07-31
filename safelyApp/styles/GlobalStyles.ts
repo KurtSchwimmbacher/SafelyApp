@@ -90,7 +90,13 @@ export const GlobalStyles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: 'JosefinSans_400Regular',
   },
-
+  outlineButtonText: {
+    height: '50%',
+    color: Colors.midDark,
+    fontSize: 24,
+    textAlign: 'center',
+    fontFamily: 'JosefinSans_400Regular',
+  },
   fullWidthButton: {
     width: '80%',
     height: 50,
@@ -99,6 +105,18 @@ export const GlobalStyles = StyleSheet.create({
     paddingVertical: Spacing.sm,
     paddingHorizontal: Spacing.lg,
     borderRadius: Radius.full,
+  },
+
+  outlineButtonFW: {
+    width: '80%',
+    height: 50,
+    justifyContent: 'center',
+    paddingVertical: Spacing.sm,
+    backgroundColor: Colors.white,
+    paddingHorizontal: Spacing.lg,
+    borderRadius: Radius.md,
+    borderWidth: 1,
+    borderColor: Colors.midDark,
   }
 
 });
