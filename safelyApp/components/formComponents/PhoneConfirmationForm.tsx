@@ -1,7 +1,7 @@
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
 import { Colors, GlobalStyles, Spacing, Typography } from "../../styles/GlobalStyles";
 
-const PhoneConfirmationForm = () => {
+const PhoneConfirmationForm = ({ onContinue, onBack }: { onContinue: () => void; onBack: () => void }) => {
   return (
     <View>
       <Text style={[Typography.body, { marginTop: 24 }]}>
@@ -14,7 +14,7 @@ const PhoneConfirmationForm = () => {
       />
       <TouchableOpacity
         style={[GlobalStyles.fullWidthButton, { marginTop: Spacing.lg }]}
-        onPress={() => console.log('Code submitted')}
+        onPress={onContinue}
       >
         <Text style={GlobalStyles.buttonText}>Verify</Text>
       </TouchableOpacity>

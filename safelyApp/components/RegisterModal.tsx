@@ -4,6 +4,9 @@ import { Colors, GlobalStyles, Radius, Spacing, Typography } from '../styles/Glo
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import RegisterForm from './formComponents/RegisterForm';
 import PhoneConfirmationForm from './formComponents/PhoneConfirmationForm';
+import NotificationPermissionForm from './formComponents/NotificationPermissionForm';
+import FeedbackForm from './formComponents/FeedbackForm';
+import FinishSigningUpForm from './formComponents/FinishSigningUpForm';
 
 interface RegisterModalProps {
   visible: boolean;
@@ -11,7 +14,16 @@ interface RegisterModalProps {
 }
 
 export default function RegisterModal({ visible, onClose }: RegisterModalProps) {
-    const [step, setStep] = useState<'register' | 'confirm'>('register');
+    const [step, setStep] = useState<'register' |'confirm' |'details' |'feedback' |'notifications'>('register');
+
+    const stepTitles: Record<typeof step, string> = {
+    register: 'Register',
+    confirm: 'Confirm Phone',
+    details: 'Your Details',
+    feedback: 'About the App',
+    notifications: 'Enable Notifications',
+    };
+
 
     return (
         <Modal
@@ -22,14 +34,14 @@ export default function RegisterModal({ visible, onClose }: RegisterModalProps) 
         >
 
             <View style={styles.overlay}>
-                <View style={styles.content}>
+                <View style={[styles.content, step === 'notifications' && styles.shortContent]}>
 
                     {/* header */}
                     <View style={styles.header}>
                         {/* spacer to balance the close icon */}
                         <View style={styles.sideSpacer} />
                         <Text style={[Typography.body, styles.headerTitle, { color: Colors.primaryLight }]}>
-                            {step === 'register' ? 'Register' : 'Confirm Phone'}
+                            {stepTitles[step]}
                         </Text>
                         <TouchableOpacity
                             onPress={onClose}
@@ -41,11 +53,14 @@ export default function RegisterModal({ visible, onClose }: RegisterModalProps) 
 
                     {/* Register Form */}
                     <View style={GlobalStyles.container}>
-                        {step === 'register' ? (
-                            <RegisterForm onContinue={() => setStep('confirm')} />
-                            ) : (
-                            <PhoneConfirmationForm />
-                        )}
+                        <View style={GlobalStyles.container}>
+                            {step === 'register' && <RegisterForm onContinue={() => setStep('confirm')} />}
+                            {step === 'confirm' && <PhoneConfirmationForm onContinue={() => setStep('details')} />}
+                            {step === 'details' && <FinishSigningUpForm onContinue={() => setStep('feedback')} />}
+                            {step === 'feedback' && <FeedbackForm onContinue={() => setStep('notifications')} />}
+                            {step === 'notifications' && <NotificationPermissionForm onFinish={onClose} />}
+                        </View>
+
                     </View>
                 </View>
             </View>
@@ -65,6 +80,9 @@ const styles = StyleSheet.create({
     borderTopRightRadius: Radius.lg,
     minHeight: 800,
     overflow: 'hidden',
+  },
+  shortContent: {
+    minHeight: 400,
   },
   header: {
     height: Spacing.xl*2,
