@@ -1,17 +1,12 @@
-import React, { useState } from 'react';
-import { GlobalStyles, Typography, Spacing } from '../styles/GlobalStyles';
-import { View, Text, TouchableOpacity, SafeAreaView } from 'react-native';
+import React from 'react';
 import CircularTimer from '../components/CircularTimer';
+import { SafeAreaView } from 'react-native';
 
 
-export default function LandingScreen() {
-  const [modalType, setModalType] = useState<'login' | 'register' | null>(null);
-
+export default function App() {
   return (
-    <SafeAreaView style={[GlobalStyles.container]}>
+    <SafeAreaView style={{ flex: 1 }}>
       <CircularTimer />
     </SafeAreaView>
   );
 }
-
-

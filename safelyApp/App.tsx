@@ -12,6 +12,7 @@ import {
   JosefinSans_700Bold,
   JosefinSans_300Light,
 } from '@expo-google-fonts/josefin-sans';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 export default function App() {
 
@@ -26,7 +27,9 @@ export default function App() {
   if (!fontsLoaded) return null; 
   
   return (
-    <CreateTimer />
+     <GestureHandlerRootView style={{ flex: 1 }}>
+      <CreateTimer />
+    </GestureHandlerRootView>
   );
 }
 
