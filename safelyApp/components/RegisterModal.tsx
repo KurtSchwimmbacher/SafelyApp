@@ -1,15 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Modal, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Colors, GlobalStyles, Radius, Spacing, Typography } from '../styles/GlobalStyles';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import RegisterForm from './formComponents/RegisterForm';
+import PhoneConfirmationForm from './formComponents/PhoneConfirmationForm';
 
-interface LoginModalProps {
+interface RegisterModalProps {
   visible: boolean;
   onClose: () => void;
 }
 
-export default function LoginModal({ visible, onClose }: LoginModalProps) {
+export default function RegisterModal({ visible, onClose }: RegisterModalProps) {
+    const [step, setStep] = useState<'register' | 'confirm'>('register');
+
     return (
         <Modal
             visible={visible}
@@ -25,7 +28,9 @@ export default function LoginModal({ visible, onClose }: LoginModalProps) {
                     <View style={styles.header}>
                         {/* spacer to balance the close icon */}
                         <View style={styles.sideSpacer} />
-                        <Text style={[Typography.body, styles.headerTitle, { color: Colors.primaryLight }]}>Register</Text>
+                        <Text style={[Typography.body, styles.headerTitle, { color: Colors.primaryLight }]}>
+                            {step === 'register' ? 'Register' : 'Confirm Phone'}
+                        </Text>
                         <TouchableOpacity
                             onPress={onClose}
                             style={styles.closeButton}
@@ -34,9 +39,13 @@ export default function LoginModal({ visible, onClose }: LoginModalProps) {
                         </TouchableOpacity>
                     </View>
 
-                    {/* Login Form */}
+                    {/* Register Form */}
                     <View style={GlobalStyles.container}>
-                        <RegisterForm />
+                        {step === 'register' ? (
+                            <RegisterForm onContinue={() => setStep('confirm')} />
+                            ) : (
+                            <PhoneConfirmationForm />
+                        )}
                     </View>
                 </View>
             </View>

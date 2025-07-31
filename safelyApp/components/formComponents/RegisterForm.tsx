@@ -2,8 +2,11 @@ import { View, StyleSheet, TextInput, TouchableOpacity, Text } from "react-nativ
 import { Colors, GlobalStyles, Spacing, Typography } from "../../styles/GlobalStyles";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
+interface RegisterFormProps {
+  onContinue: () => void;
+}
 
-const RegisterForm = () => {
+const RegisterForm = ({onContinue}: RegisterFormProps) => {
 
     return (
         <View style={GlobalStyles.container}>
@@ -33,7 +36,7 @@ const RegisterForm = () => {
             />
 
             <TouchableOpacity style={[GlobalStyles.fullWidthButton, { marginTop: Spacing.lg, width: '100%' }]}
-                onPress={() => console.log('Login pressed')}>
+                onPress={onContinue}>
                 <Text style={GlobalStyles.buttonText}>Continue</Text>
             </TouchableOpacity>
 
