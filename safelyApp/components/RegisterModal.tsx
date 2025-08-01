@@ -15,13 +15,31 @@ interface RegisterModalProps {
 
 export default function RegisterModal({ visible, onClose }: RegisterModalProps) {
     const [step, setStep] = useState<'register' |'confirm' |'details' |'feedback' |'notifications'>('register');
+    const canGoBack = step !== 'register';
+
+    const handleBack = () => {
+        switch (step) {
+            case 'confirm':
+            setStep('register');
+            break;
+            case 'details':
+            setStep('confirm');
+            break;
+            case 'feedback':
+            setStep('details');
+            break;
+            case 'notifications':
+            setStep('feedback');
+            break;
+        }
+    };
 
     const stepTitles: Record<typeof step, string> = {
-    register: 'Register',
-    confirm: 'Confirm Phone',
-    details: 'Your Details',
-    feedback: 'About the App',
-    notifications: 'Enable Notifications',
+        register: 'Register',
+        confirm: 'Confirm Phone',
+        details: 'Your Details',
+        feedback: 'About the App',
+        notifications: 'Enable Notifications',
     };
 
 
@@ -38,27 +56,51 @@ export default function RegisterModal({ visible, onClose }: RegisterModalProps) 
 
                     {/* header */}
                     <View style={styles.header}>
-                        {/* spacer to balance the close icon */}
-                        <View style={styles.sideSpacer} />
+                        {canGoBack ? (
+                            <TouchableOpacity onPress={handleBack} style={styles.backButton}>
+                            <MaterialCommunityIcons name="chevron-left" size={28} color={Colors.primaryLight} />
+                            </TouchableOpacity>
+                        ) : (
+                            <View style={styles.sideSpacer} />
+                        )}
+
                         <Text style={[Typography.body, styles.headerTitle, { color: Colors.primaryLight }]}>
                             {stepTitles[step]}
                         </Text>
-                        <TouchableOpacity
-                            onPress={onClose}
-                            style={styles.closeButton}
-                        >
+
+                        <TouchableOpacity onPress={onClose} style={styles.closeButton}>
                             <MaterialCommunityIcons name="close" size={24} color={Colors.primaryLight} />
                         </TouchableOpacity>
                     </View>
 
+
                     {/* Register Form */}
                     <View style={GlobalStyles.container}>
                         <View style={GlobalStyles.container}>
-                            {step === 'register' && <RegisterForm onContinue={() => setStep('confirm')} />}
-                            {step === 'confirm' && <PhoneConfirmationForm onContinue={() => setStep('details')} />}
-                            {step === 'details' && <FinishSigningUpForm onContinue={() => setStep('feedback')} />}
-                            {step === 'feedback' && <FeedbackForm onContinue={() => setStep('notifications')} />}
-                            {step === 'notifications' && <NotificationPermissionForm onFinish={onClose} />}
+                            {step === 'register' &&
+                                <RegisterForm 
+                                onContinue={() => setStep('confirm')}   
+                            />}
+                            {step === 'confirm' &&
+                                <PhoneConfirmationForm 
+                                onContinue={() => setStep('details')} 
+                                onBack={()=> setStep('register')}  
+                            />}
+                            {step === 'details' && 
+                                <FinishSigningUpForm 
+                                onContinue={() => setStep('feedback')} 
+                                onBack={()=> setStep('confirm')}  
+                            />}
+                            {step === 'feedback' &&
+                                <FeedbackForm 
+                                onContinue={() => setStep('notifications')} 
+                                onBack={()=> setStep('details')}  
+                                />}
+                            {step === 'notifications' &&
+                                <NotificationPermissionForm 
+                                onFinish={onClose}
+                                onBack={()=> setStep('feedback')}
+                            />}
                         </View>
 
                     </View>
@@ -85,23 +127,27 @@ const styles = StyleSheet.create({
     minHeight: 400,
   },
   header: {
-    height: Spacing.xl*2,
+    height: Spacing.xl * 2,
     backgroundColor: Colors.white,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     borderBottomWidth: 1,
     borderColor: Colors.light,
     paddingHorizontal: Spacing.lg,
-  },
-  headerTitle:{
+},
+    headerTitle: {
     flex: 1,
     textAlign: 'center',
-  },
-  closeButton: {
-    padding: Spacing.sm,
-  },
-  sideSpacer: {
-  width: 32, // Same width as the close icon area for symmetry
     },
+    closeButton: {
+    padding: Spacing.sm,
+    },
+    backButton: {
+    padding: Spacing.sm,
+    },
+    sideSpacer: {
+    width: 32, // Same width as icon buttons
+    },
+
 });
