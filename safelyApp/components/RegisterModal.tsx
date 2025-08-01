@@ -37,7 +37,7 @@ export default function RegisterModal({ visible, onClose }: RegisterModalProps) 
     const stepTitles: Record<typeof step, string> = {
         register: 'Register',
         confirm: 'Confirm Phone',
-        details: 'Your Details',
+        details: 'Finish Signing Up',
         feedback: 'About the App',
         notifications: 'Enable Notifications',
     };
