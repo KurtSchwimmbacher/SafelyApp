@@ -4,27 +4,41 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useState } from "react";
 import { loginUser } from "../../services/authService";
 
+// validation methods 
+import { validateEmail, validatePassword } from "../../services/validationService";
 
 
 const LoginForm = () => {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    
+
+    const [errors, setErrors] = useState<{ email?: string; password?: string; general?: string }>({});
+
     // replace with context && fix issue where user has to login every time
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     const login = async () => {
-        try {
-        await loginUser(email, password);
-        setIsLoggedIn(true);
-        // replace with navigate to home screen
-        console.log('Login successful');
+        const emailError = validateEmail(email);
+        const passwordError = validatePassword(password);
 
-        } catch (e) {;
-        console.log('Login failed:', e);
+        setErrors({
+            email: emailError || "",
+            password: passwordError || "",
+        });
+
+        if(! emailError && !passwordError) {
+            try {
+                await loginUser(email, password);
+                setIsLoggedIn(true);
+                // replace with navigate to home screen
+                console.log('Login successful');
+                
+            } catch (error) {
+                setErrors({general: "Invalid Email or Password"})
+            }
         }
-  };
+    };
 
     return (
         <View style={GlobalStyles.container}>
@@ -36,6 +50,7 @@ const LoginForm = () => {
                 onChangeText={newText => setEmail(newText)}
                 defaultValue={email}
             />
+            {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
 
             <TextInput
                 style={styles.inputField}
@@ -44,7 +59,9 @@ const LoginForm = () => {
                 onChangeText={newText => setPassword(newText)}
                 defaultValue={password}
             />
+            {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
 
+            {errors.general && <Text style={[styles.errorText, {marginTop: Spacing.md}]}>{errors.general}</Text>}
             <TouchableOpacity style={[GlobalStyles.fullWidthButton, { marginTop: Spacing.lg, width: '100%' }]}
                 onPress={login}>
                 <Text style={GlobalStyles.buttonText}>Continue</Text>
@@ -61,8 +78,8 @@ const LoginForm = () => {
             {/* Email */}
             <TouchableOpacity style={[GlobalStyles.outlineButtonFW, { width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }]}
                 onPress={() => console.log('email pressed')}>
-                <MaterialCommunityIcons name="email" size={24} color={Colors.primary} style={{ marginRight: 16  }} />
-                <Text style={GlobalStyles.outlineButtonText}>Continue with Email</Text>
+                <MaterialCommunityIcons name="phone" size={24} color={Colors.primary} style={{ marginRight: 16  }} />
+                <Text style={GlobalStyles.outlineButtonText}>Continue with Phone</Text>
             </TouchableOpacity>
 
             {/* Google */}
@@ -112,5 +129,9 @@ const styles = StyleSheet.create({
     orText: {
         marginHorizontal: 10,
     },
-   
+   errorText: {
+    color: "red",
+    marginTop: 4,
+    fontSize: 12,
+  },
 })

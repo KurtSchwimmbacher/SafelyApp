@@ -91,7 +91,7 @@ export const GlobalStyles = StyleSheet.create({
     fontFamily: 'JosefinSans_400Regular',
   },
   outlineButtonText: {
-    height: '50%',
+    // height: '50%',
     color: Colors.midDark,
     fontSize: 24,
     textAlign: 'center',
@@ -108,10 +108,12 @@ export const GlobalStyles = StyleSheet.create({
   },
 
   outlineButtonFW: {
+    display: 'flex',
     width: '80%',
-    height: 50,
+    height: 52,
+    paddingVertical: Spacing.xs,
     justifyContent: 'center',
-    paddingVertical: Spacing.sm,
+    alignItems: 'center',
     backgroundColor: Colors.white,
     paddingHorizontal: Spacing.lg,
     borderRadius: Radius.md,

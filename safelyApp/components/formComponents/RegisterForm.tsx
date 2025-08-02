@@ -74,7 +74,7 @@ const RegisterForm = ({onContinue}: RegisterFormProps) => {
             {/* phone */}
             <TouchableOpacity style={[GlobalStyles.outlineButtonFW, { width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }]}
                 onPress={() => console.log('phone pressed')}>
-                <MaterialCommunityIcons name="email" size={24} color={Colors.primary} style={{ marginRight: 16  }} />
+                <MaterialCommunityIcons name="phone" size={24} color={Colors.primary} style={{ marginRight: 16  }} />
                 <Text style={GlobalStyles.outlineButtonText}>Continue with Phone</Text>
             </TouchableOpacity>
 
