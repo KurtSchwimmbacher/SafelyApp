@@ -3,6 +3,7 @@ import { Colors, GlobalStyles, Spacing, Typography } from "../../styles/GlobalSt
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useState } from "react";
 import { registerUser } from "../../services/authService";
+import { validateEmail, validatePassword, validatePasswordsMatch } from "../../services/validationService";
 
 interface RegisterFormProps {
   onContinue: () => void;
@@ -14,20 +15,32 @@ const RegisterForm = ({onContinue}: RegisterFormProps) => {
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
 
-    // TODO: Add password validation and confirmation logic
+    const [errors, setErrors] = useState<{ email?: string; password?: string; confirmPassword?: string, general?: string }>({});
     
     // replace with context && fix issue where user has to login every time
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     const register = async () => {
-        try {
-            await registerUser(email, password);
-            setIsLoggedIn(true);
-            // replace with navigate to home screen
-            console.log('Registration successful');
-            onContinue(); // Call the onContinue prop to proceed after registration
-        } catch (error) {
-            console.log('Registration failed:', error);
+        const emailError = validateEmail(email);
+        const passwordError = validatePassword(password);
+        const passwordMatchError = validatePasswordsMatch(password, confirmPassword)
+        
+        setErrors({
+            email: emailError || "",
+            password: passwordError || "",
+            confirmPassword: passwordMatchError || ""
+        });
+
+        if(!emailError && !passwordError && !passwordMatchError){
+            try {
+                await registerUser(email, password);
+                setIsLoggedIn(true);
+                // replace with navigate to home screen
+                console.log('Registration successful');
+                onContinue(); // Call the onContinue prop to proceed after registration
+            } catch (error) {
+                setErrors({general: "Invalid Email or Password"})
+            }
         }
     }
 
@@ -41,6 +54,7 @@ const RegisterForm = ({onContinue}: RegisterFormProps) => {
                 onChangeText={newText => setEmail(newText)}
                 defaultValue={email}
             />
+            {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
 
             <TextInput
                 style={styles.inputField}
@@ -49,6 +63,7 @@ const RegisterForm = ({onContinue}: RegisterFormProps) => {
                 onChangeText={newText => setPassword(newText)}
                 defaultValue={password}
             />
+            {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
 
             <TextInput
                 style={styles.inputField}
@@ -57,7 +72,9 @@ const RegisterForm = ({onContinue}: RegisterFormProps) => {
                 onChangeText={newText => setConfirmPassword(newText)}
                 defaultValue={confirmPassword}
             />
+            {errors.confirmPassword && <Text style={styles.errorText}>{errors.confirmPassword}</Text>}
 
+            {errors.general && <Text style={[styles.errorText, {marginTop: Spacing.md}]}>{errors.general}</Text>}
             <TouchableOpacity style={[GlobalStyles.fullWidthButton, { marginTop: Spacing.lg, width: '100%' }]}
                 onPress={register}>
                 <Text style={GlobalStyles.buttonText}>Continue</Text>
@@ -125,5 +142,9 @@ const styles = StyleSheet.create({
     orText: {
         marginHorizontal: 10,
     },
-   
+   errorText: {
+    color: "red",
+    marginTop: 4,
+    fontSize: 12,
+  },
 })
