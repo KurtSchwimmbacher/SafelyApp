@@ -3,9 +3,38 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Colors, Spacing, Typography, GlobalStyles } from '../../styles/GlobalStyles';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Switch } from 'react-native-gesture-handler';
+import { getAuth } from 'firebase/auth';
+import { createUserProfile } from '../../services/userService';
 
 const NotificationPermissionForm = ({ onFinish, onBack }: { onFinish: () => void; onBack: () => void }) => {
-    const [personalized, setPersonalized] = useState(true);
+  const [personalized, setPersonalized] = useState(true);
+
+
+    const handleFinish = async () => {
+    const user = getAuth().currentUser;
+    if(!user) return;
+
+
+    try {
+      await createUserProfile({
+        uid: user.uid,
+        email: user.email ?? '',
+        firstName: "...", //fetch from context
+        lastName: "...",
+        dateOfBirth: "...",
+        phoneNumber: "...",
+        notifications: personalized,
+        contactsShared: true, //TODO: make dynamic
+        createdAt: new Date().toISOString(), 
+      });
+
+      onFinish();
+    } catch (error) {
+      console.log("Failed to store user profile", error);
+    }
+
+  }
+
   return (
     <View>
 
@@ -32,7 +61,7 @@ const NotificationPermissionForm = ({ onFinish, onBack }: { onFinish: () => void
             onPress={() => {
             //  request permission here with Expo Notifications API
             console.log('Notification permission requested');
-            onFinish();
+            handleFinish();
             }}
         >
             <Text style={GlobalStyles.buttonText}>Yes, notify me</Text>
