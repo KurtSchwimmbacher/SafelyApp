@@ -1,32 +1,52 @@
 import { View, StyleSheet, TextInput, TouchableOpacity, Text } from "react-native"
 import { Colors, GlobalStyles, Spacing, Typography } from "../../styles/GlobalStyles";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useState } from "react";
+import { loginUser } from "../../services/authService";
 
 
 
 const LoginForm = () => {
+
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    
+    // replace with context && fix issue where user has to login every time
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+    const login = async () => {
+        try {
+        await loginUser(email, password);
+        setIsLoggedIn(true);
+        // replace with navigate to home screen
+        console.log('Login successful');
+
+        } catch (e) {;
+        console.log('Login failed:', e);
+        }
+  };
 
     return (
         <View style={GlobalStyles.container}>
             {/* main section */}
             <TextInput
                 style={styles.inputField}
-                placeholder="Phone Number"
-                keyboardType="phone-pad"
-                // onChangeText={newText => setEmail(newText)}
-                // defaultValue={email}
+                placeholder="Email"
+                keyboardType="email-address"
+                onChangeText={newText => setEmail(newText)}
+                defaultValue={email}
             />
 
             <TextInput
                 style={styles.inputField}
                 placeholder="Password"
                 secureTextEntry={true}
-                // onChangeText={newText => setEmail(newText)}
-                // defaultValue={email}
+                onChangeText={newText => setPassword(newText)}
+                defaultValue={password}
             />
 
             <TouchableOpacity style={[GlobalStyles.fullWidthButton, { marginTop: Spacing.lg, width: '100%' }]}
-                onPress={() => console.log('Login pressed')}>
+                onPress={login}>
                 <Text style={GlobalStyles.buttonText}>Continue</Text>
             </TouchableOpacity>
 

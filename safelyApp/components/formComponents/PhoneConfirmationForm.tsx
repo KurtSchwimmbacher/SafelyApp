@@ -47,7 +47,10 @@ const PhoneConfirmationForm = ({
   return (
     <Pressable onPress={Keyboard.dismiss}>
       <Text style={[Typography.body, { marginTop: 24, marginBottom: Spacing.md }]}>
-        Enter the code we sent over SMS to your phone number.
+        Enter the code we sent via email to your registered email address.
+      </Text>
+      <Text style={[Typography.muted, { marginBottom: Spacing.md }]}>
+        If you don't see the email, check your spam folder.
       </Text>
 
       <View style={styles.otpContainer}>
@@ -69,7 +72,7 @@ const PhoneConfirmationForm = ({
       </View>
 
       <TouchableOpacity onPress={() => console.log("Send again")}>
-        <Text style={[Typography.body, styles.link]}>Didn't get an SMS? Send again</Text>
+        <Text style={[Typography.body, styles.link]}>Didn't get an Email? Send again</Text>
       </TouchableOpacity>
 
       <TouchableOpacity onPress={() => console.log("More options")}>

@@ -26,10 +26,11 @@ const FinishSigningUpForm = ({ onContinue, onBack }: { onContinue: () => void; o
 
         <TextInput
             style={styles.inputField}
-            placeholder="Email"
+            placeholder="Phone Number"
+            keyboardType='phone-pad'
         />
         <Text style={{ color: Colors.darkLight, fontSize: 12, marginTop: 4, marginLeft: 2 }}>
-            We'll email you important updates.
+            We'll only contact you for important updates.
         </Text>
     
 

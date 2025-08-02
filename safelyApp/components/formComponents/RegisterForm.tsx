@@ -1,6 +1,8 @@
 import { View, StyleSheet, TextInput, TouchableOpacity, Text } from "react-native"
 import { Colors, GlobalStyles, Spacing, Typography } from "../../styles/GlobalStyles";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useState } from "react";
+import { registerUser } from "../../services/authService";
 
 interface RegisterFormProps {
   onContinue: () => void;
@@ -8,35 +10,56 @@ interface RegisterFormProps {
 
 const RegisterForm = ({onContinue}: RegisterFormProps) => {
 
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+
+    // TODO: Add password validation and confirmation logic
+    
+    // replace with context && fix issue where user has to login every time
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+    const register = async () => {
+        try {
+            await registerUser(email, password);
+            setIsLoggedIn(true);
+            // replace with navigate to home screen
+            console.log('Registration successful');
+            onContinue(); // Call the onContinue prop to proceed after registration
+        } catch (error) {
+            console.log('Registration failed:', error);
+        }
+    }
+
     return (
         <View style={GlobalStyles.container}>
             {/* main section */}
             <TextInput
                 style={styles.inputField}
-                placeholder="Phone Number"
-                keyboardType="phone-pad"
-                // onChangeText={newText => setEmail(newText)}
-                // defaultValue={email}
+                placeholder="Email"
+                keyboardType="email-address"
+                onChangeText={newText => setEmail(newText)}
+                defaultValue={email}
             />
 
             <TextInput
                 style={styles.inputField}
                 placeholder="Password"
                 secureTextEntry={true}
-                // onChangeText={newText => setEmail(newText)}
-                // defaultValue={email}
+                onChangeText={newText => setPassword(newText)}
+                defaultValue={password}
             />
 
             <TextInput
                 style={styles.inputField}
                 placeholder="Confirm Password"
                 secureTextEntry={true}
-                // onChangeText={newText => setEmail(newText)}
-                // defaultValue={email}
+                onChangeText={newText => setConfirmPassword(newText)}
+                defaultValue={confirmPassword}
             />
 
             <TouchableOpacity style={[GlobalStyles.fullWidthButton, { marginTop: Spacing.lg, width: '100%' }]}
-                onPress={onContinue}>
+                onPress={register}>
                 <Text style={GlobalStyles.buttonText}>Continue</Text>
             </TouchableOpacity>
 
@@ -48,11 +71,11 @@ const RegisterForm = ({onContinue}: RegisterFormProps) => {
             </View>
 
             {/* continue with other options section */}
-            {/* Email */}
+            {/* phone */}
             <TouchableOpacity style={[GlobalStyles.outlineButtonFW, { width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }]}
-                onPress={() => console.log('email pressed')}>
+                onPress={() => console.log('phone pressed')}>
                 <MaterialCommunityIcons name="email" size={24} color={Colors.primary} style={{ marginRight: 16  }} />
-                <Text style={GlobalStyles.outlineButtonText}>Continue with Email</Text>
+                <Text style={GlobalStyles.outlineButtonText}>Continue with Phone</Text>
             </TouchableOpacity>
 
             {/* Google */}
