@@ -1,18 +1,13 @@
 import React from "react";
 import { View, Text, StyleSheet, SafeAreaView } from "react-native";
 import { Colors, Spacing, Typography } from "../styles/GlobalStyles";
+import TimerComponent from "../components/TimerComponent";
 
 const HomeScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.heading}>Set Your Safety Timer</Text>
-
-
-      {/* Static control buttons */}
-      <View style={styles.buttonRow}>
-        <Text style={styles.staticButton}>Start</Text>
-        <Text style={styles.staticButton}>Reset</Text>
-      </View>
+      <TimerComponent />
     </SafeAreaView>
   );
 };

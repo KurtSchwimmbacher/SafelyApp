@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Colors, Spacing, Typography, GlobalStyles } from '../../styles/GlobalStyles';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Switch } from 'react-native-gesture-handler';
 import { getAuth } from 'firebase/auth';
 import { createUserProfile } from '../../services/userService';
