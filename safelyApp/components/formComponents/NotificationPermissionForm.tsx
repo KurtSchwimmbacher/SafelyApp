@@ -5,26 +5,35 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Switch } from 'react-native-gesture-handler';
 import { getAuth } from 'firebase/auth';
 import { createUserProfile } from '../../services/userService';
+import { useRegisterContext } from '../../contexts/RegisterContext';
 
 const NotificationPermissionForm = ({ onFinish, onBack }: { onFinish: () => void; onBack: () => void }) => {
+
+  // import context for registration 
+  const {registerData, setRegisterData} = useRegisterContext();
+
   const [personalized, setPersonalized] = useState(true);
 
+  const handleToggle = (value: boolean) => {
+    setPersonalized(value);
+    setRegisterData({ personalizedNotifications: value });
+  };
 
-    const handleFinish = async () => {
-    const user = getAuth().currentUser;
-    if(!user) return;
 
+  const handleFinish = async () => {
+  const user = getAuth().currentUser;
 
+  if(!user) return;
     try {
       await createUserProfile({
         uid: user.uid,
         email: user.email ?? '',
-        firstName: "...", //fetch from context
-        lastName: "...",
-        dateOfBirth: "...",
-        phoneNumber: "...",
+        firstName: registerData.firstName, 
+        lastName: registerData.lastName,
+        dateOfBirth: registerData.dateOfBirth,
+        phoneNumber: registerData.phoneNumber,
         notifications: personalized,
-        contactsShared: true, //TODO: make dynamic
+        contactsShared: registerData.contactsShared,
         createdAt: new Date().toISOString(), 
       });
 
@@ -50,7 +59,7 @@ const NotificationPermissionForm = ({ onFinish, onBack }: { onFinish: () => void
             <Text style={styles.barText}>Get personalised recommendations and more</Text>
             <Switch
                 value={personalized}
-                onValueChange={setPersonalized}
+                onValueChange={handleToggle}
                 trackColor={{ false: Colors.light, true: Colors.primaryLight }}
                 thumbColor={personalized ? Colors.primary : Colors.light}
             />

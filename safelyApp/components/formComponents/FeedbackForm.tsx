@@ -2,8 +2,19 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Colors, Spacing, Typography, GlobalStyles } from '../../styles/GlobalStyles';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useRegisterContext } from '../../contexts/RegisterContext';
 
 const FeedbackForm = ({ onContinue, onBack }: { onContinue: () => void; onBack: () => void }) => {
+
+  // import context for registration 
+  const {registerData, setRegisterData} = useRegisterContext();
+
+  const setContacts = () =>{
+    // TODO actually get access to contacts
+    setRegisterData({contactsShared: true});
+    onContinue();
+  }
+
   return (
     <View>
       <Text style={[Typography.body, { marginBottom: Spacing.md }]}>
@@ -24,7 +35,7 @@ const FeedbackForm = ({ onContinue, onBack }: { onContinue: () => void; onBack: 
 
       <TouchableOpacity
         style={[GlobalStyles.outlineButtonFW, { marginTop: Spacing.lg, width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }]}
-        onPress={onContinue}
+        onPress={setContacts}
       >
         <MaterialCommunityIcons name="account-multiple-plus" size={24} color={Colors.primary} style={{ marginRight: 12, }} />
         <Text style={GlobalStyles.outlineButtonText}>Allow Access to Contacts</Text>
