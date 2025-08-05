@@ -35,7 +35,7 @@ const NotificationPermissionForm = ({ onFinish, onBack }: { onFinish: () => void
         contactsShared: registerData.contactsShared,
         createdAt: new Date().toISOString(), 
       });
-
+      console.log("Created user")
       onFinish();
     } catch (error) {
       console.log("Failed to store user profile", error);

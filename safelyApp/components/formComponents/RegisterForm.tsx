@@ -17,8 +17,6 @@ const RegisterForm = ({onContinue}: RegisterFormProps) => {
 
     const [errors, setErrors] = useState<{ email?: string; password?: string; confirmPassword?: string, general?: string }>({});
     
-    // replace with context && fix issue where user has to login every time
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     const register = async () => {
         const emailError = validateEmail(email);
@@ -34,8 +32,6 @@ const RegisterForm = ({onContinue}: RegisterFormProps) => {
         if(!emailError && !passwordError && !passwordMatchError){
             try {
                 await registerUser(email, password);
-                setIsLoggedIn(true);
-                // replace with navigate to home screen
                 console.log('Registration successful');
                 onContinue(); // Call the onContinue prop to proceed after registration
             } catch (error) {

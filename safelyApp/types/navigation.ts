@@ -3,4 +3,5 @@ export type RootStackParamList = {
   Landing: undefined;
   Login: undefined;
   Home: undefined;
+  RegistrationModal: undefined;
 };

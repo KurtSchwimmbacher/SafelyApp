@@ -13,6 +13,7 @@ export default function LandingScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const handleLoginSuccess = () =>{
+    console.log("Login / sign up success")
     // close modal
     setModalType(null);
     // navigate to home
@@ -38,7 +39,10 @@ export default function LandingScreen() {
           onSuccess={handleLoginSuccess}
           />
 
-        <RegisterModal visible={modalType === 'register'} onClose={() => setModalType(null)} />
+        <RegisterModal 
+          visible={modalType === 'register'} 
+          onClose={() => setModalType(null)} 
+          onSuccess={handleLoginSuccess}/>
       </SafeAreaView>
     </RegisterProvider>
     

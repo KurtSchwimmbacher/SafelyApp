@@ -11,9 +11,10 @@ import FinishSigningUpForm from './formComponents/FinishSigningUpForm';
 interface RegisterModalProps {
   visible: boolean;
   onClose: () => void;
+  onSuccess: () => void;
 }
 
-export default function RegisterModal({ visible, onClose }: RegisterModalProps) {
+export default function RegisterModal({ visible, onClose, onSuccess }: RegisterModalProps) {
     const [step, setStep] = useState<'register' |'confirm' |'details' |'feedback' |'notifications'>('register');
     const canGoBack = step !== 'register';
 
@@ -98,7 +99,7 @@ export default function RegisterModal({ visible, onClose }: RegisterModalProps) 
                                 />}
                             {step === 'notifications' &&
                                 <NotificationPermissionForm 
-                                onFinish={onClose}
+                                onFinish={onSuccess}
                                 onBack={()=> setStep('feedback')}
                             />}
                         </View>
