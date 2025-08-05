@@ -6,10 +6,11 @@ import LoginForm from './formComponents/LoginForm';
 
 interface LoginModalProps {
   visible: boolean;
+  onSuccess: () => void;
   onClose: () => void;
 }
 
-export default function LoginModal({ visible, onClose }: LoginModalProps) {
+export default function LoginModal({ visible, onClose, onSuccess }: LoginModalProps) {
     return (
         <Modal
             visible={visible}
@@ -36,7 +37,7 @@ export default function LoginModal({ visible, onClose }: LoginModalProps) {
 
                     {/* Login Form */}
                     <View style={GlobalStyles.container}>
-                        <LoginForm />
+                        <LoginForm onSuccess={onSuccess} />
                     </View>
                 </View>
             </View>

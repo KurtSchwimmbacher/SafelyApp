@@ -7,8 +7,11 @@ import { loginUser } from "../../services/authService";
 // validation methods 
 import { validateEmail, validatePassword } from "../../services/validationService";
 
+interface LoginFormProps {
+  onSuccess: () => void;
+}
 
-const LoginForm = () => {
+const LoginForm = ({onSuccess}: LoginFormProps) => {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -27,12 +30,12 @@ const LoginForm = () => {
             password: passwordError || "",
         });
 
-        if(! emailError && !passwordError) {
+        if(!emailError && !passwordError) {
             try {
                 await loginUser(email, password);
                 setIsLoggedIn(true);
-                // replace with navigate to home screen
-                console.log('Login successful');
+                // close modal + navigate
+                onSuccess();
                 
             } catch (error) {
                 setErrors({general: "Invalid Email or Password"})
