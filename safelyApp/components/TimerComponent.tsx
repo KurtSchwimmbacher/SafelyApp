@@ -4,10 +4,10 @@ import Svg, { Circle } from 'react-native-svg';
 import { Colors, Spacing, Typography } from '../styles/GlobalStyles';
 import { saveTimer } from '../services/timersService';
 
-
 const TimerComponent: React.FC = () => {
   const [minutes, setMinutes] = useState(17);
   const [timerName, setTimerName] = useState('');
+  const [checkIns, setCheckIns] = useState('');
 
   const updateMinutes = (change: number) => {
     const newMinutes = Math.max(0, Math.min(60, minutes + change));
@@ -16,9 +16,15 @@ const TimerComponent: React.FC = () => {
 
   const handleSaveTimer = async () => {
     try {
-      await saveTimer(minutes, timerName);
+      const checkInsNum = parseInt(checkIns) || 0;
+      if (checkInsNum < 0) {
+        Alert.alert('Error', 'Number of check-ins cannot be negative.');
+        return;
+      }
+      await saveTimer(minutes, timerName, checkInsNum);
       Alert.alert('Success', `Timer${timerName ? ` "${timerName}"` : ''} saved to your profile!`);
       setTimerName(''); // Reset name after save
+      setCheckIns(''); // Reset check-ins after save
     } catch (error) {
       Alert.alert('Error', 'Failed to save timer. Please try again.');
     }
@@ -26,14 +32,19 @@ const TimerComponent: React.FC = () => {
 
   return (
     <View style={styles.container}>
-
       <TextInput
         style={styles.input}
         placeholder="Timer Name"
         value={timerName}
         onChangeText={setTimerName}
       />
-
+      <TextInput
+        style={styles.input}
+        placeholder="Number of Check-ins"
+        value={checkIns}
+        onChangeText={setCheckIns}
+        keyboardType="numeric"
+      />
       <View style={styles.timerContainer}>
         <Svg height="250" width="250" viewBox="0 0 200 200">
           <Circle
@@ -52,6 +63,7 @@ const TimerComponent: React.FC = () => {
             strokeWidth="20"
             fill="none"
             strokeDasharray={[2 * Math.PI * 90 * (minutes / 60), 2 * Math.PI * 90]}
+            strokeDashoffset={(-0.25 * 2 * Math.PI * 270)} 
           />
           <Text style={styles.timerText}>
             {minutes}
@@ -67,7 +79,6 @@ const TimerComponent: React.FC = () => {
             <Text style={styles.buttonText}>+</Text>
           </TouchableOpacity>
         </View>
-
         <TouchableOpacity style={[styles.button, styles.saveButton]} onPress={handleSaveTimer}>
           <Text style={styles.buttonText}>Save</Text>
         </TouchableOpacity>
