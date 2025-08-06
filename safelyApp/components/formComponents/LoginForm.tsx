@@ -4,6 +4,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useState } from "react";
 import { loginUser } from "../../services/authService";
 
+
 // validation methods 
 import { validateEmail, validatePassword } from "../../services/validationService";
 
@@ -18,8 +19,7 @@ const LoginForm = ({onSuccess}: LoginFormProps) => {
 
     const [errors, setErrors] = useState<{ email?: string; password?: string; general?: string }>({});
 
-    // replace with context && fix issue where user has to login every time
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    
 
     const login = async () => {
         const emailError = validateEmail(email);
@@ -33,7 +33,7 @@ const LoginForm = ({onSuccess}: LoginFormProps) => {
         if(!emailError && !passwordError) {
             try {
                 await loginUser(email, password);
-                setIsLoggedIn(true);
+                
                 // close modal + navigate
                 onSuccess();
                 
