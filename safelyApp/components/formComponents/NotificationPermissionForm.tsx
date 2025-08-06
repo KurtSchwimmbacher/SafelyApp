@@ -20,7 +20,7 @@ const NotificationPermissionForm = ({ onFinish, onBack }: { onFinish: () => void
 
 
   const handleFinish = async () => {
-  const user = getAuth().currentUser;
+  const user = registerData.user;
 
   if(!user) return;
     try {

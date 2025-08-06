@@ -8,6 +8,7 @@ import NotificationPermissionForm from './formComponents/NotificationPermissionF
 import FeedbackForm from './formComponents/FeedbackForm';
 import FinishSigningUpForm from './formComponents/FinishSigningUpForm';
 
+
 interface RegisterModalProps {
   visible: boolean;
   onClose: () => void;

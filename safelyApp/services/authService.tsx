@@ -13,8 +13,8 @@ export const logoutUser = async () => {
 
 export const registerUser = async (email: string, password: string) => {
   const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-  // immediately sign out
   await signOut(auth);
+  return userCredential;
 };
 
 export const getUserInfo = () => {

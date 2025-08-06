@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { User } from "firebase/auth";
 
 type RegisterData = {
   firstName: string;
@@ -7,6 +8,7 @@ type RegisterData = {
   phoneNumber: string;
   personalizedNotifications: boolean;
   contactsShared: boolean;
+  user?: User;
 };
 
 type RegisterContextType = {
@@ -22,6 +24,7 @@ const defaultValues: RegisterData = {
   phoneNumber: '',
   personalizedNotifications: true,
   contactsShared: false,
+  user: undefined,
 };
 
 // Create context

@@ -1,24 +1,10 @@
 import React, { useRef, useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  Keyboard,
-  Pressable,
-} from "react-native";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Keyboard, Pressable} from "react-native";
 import { Colors, GlobalStyles, Spacing, Typography } from "../../styles/GlobalStyles";
 
 const OTP_LENGTH = 6;
 
-const PhoneConfirmationForm = ({
-  onContinue,
-  onBack,
-}: {
-  onContinue: () => void;
-  onBack: () => void;
-}) => {
+const PhoneConfirmationForm = ({onContinue,onBack,}: {onContinue: () => void;onBack: () => void;}) => {
   const [otp, setOtp] = useState(Array(OTP_LENGTH).fill(""));
   const inputs = useRef<Array<TextInput | null>>([]);
 

@@ -4,12 +4,17 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useState } from "react";
 import { registerUser } from "../../services/authService";
 import { validateEmail, validatePassword, validatePasswordsMatch } from "../../services/validationService";
+import { useRegisterContext } from '../../contexts/RegisterContext';
 
 interface RegisterFormProps {
   onContinue: () => void;
 }
 
+
+
 const RegisterForm = ({onContinue}: RegisterFormProps) => {
+
+    const { setRegisterData } = useRegisterContext();
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -31,8 +36,9 @@ const RegisterForm = ({onContinue}: RegisterFormProps) => {
 
         if(!emailError && !passwordError && !passwordMatchError){
             try {
-                await registerUser(email, password);
-                console.log('Registration successful');
+                const userCredential = await registerUser(email, password);
+                setRegisterData({ user: userCredential.user });
+               
                 onContinue(); // Call the onContinue prop to proceed after registration
             } catch (error) {
                 setErrors({general: "Invalid Email or Password"})
