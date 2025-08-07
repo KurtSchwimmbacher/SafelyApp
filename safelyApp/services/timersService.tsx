@@ -1,3 +1,5 @@
+// Firestore interactions for timers
+
 import { getAuth } from 'firebase/auth'; // Used to access the current authenticated user
 import { collection, addDoc, getFirestore, query, where, getDocs, updateDoc, doc } from 'firebase/firestore'; // Firestore methods for database operations
 

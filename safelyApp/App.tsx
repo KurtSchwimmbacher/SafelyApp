@@ -1,6 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet } from 'react-native';
-
 import {
   useFonts as useYesevaFonts,
   YesevaOne_400Regular,
@@ -11,11 +10,10 @@ import {
   JosefinSans_700Bold,
   JosefinSans_300Light,
 } from '@expo-google-fonts/josefin-sans';
-
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import LandingScreen from './screens/LandingScreen';
 import HomeScreen from './screens/HomeScreen';
-
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { RootStackParamList } from './types/navigation';
@@ -57,10 +55,12 @@ export default function App() {
   if (!fontsLoaded) return null;
 
   return (
-    <AuthProvider>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <AppNavigator />
-      </GestureHandlerRootView>
-    </AuthProvider>
+    <SafeAreaProvider>
+      <AuthProvider>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <AppNavigator />
+        </GestureHandlerRootView>
+      </AuthProvider>
+    </SafeAreaProvider>
   );
 }
