@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, TextInput, Alert } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
 import { Colors, Spacing, Typography } from '../styles/GlobalStyles';
-import { saveTimer, getActiveTimer, markTimerInactive } from '../services/timersService';
+import { saveTimer, getActiveTimer, markTimerInactive, logCheckInStatus, Timer } from '../services/timersService';
 
 const TimerComponent: React.FC = () => {
   const [minutes, setMinutes] = useState(17);
@@ -15,46 +15,73 @@ const TimerComponent: React.FC = () => {
   const [showCheckInButton, setShowCheckInButton] = useState(false);
   const [lastCheckInTime, setLastCheckInTime] = useState<number | null>(null);
   const [timerId, setTimerId] = useState<string | null>(null);
+  const [startTime, setStartTime] = useState<string | null>(null);
 
-  // Convert minutes to seconds for countdown
-  const startTimer = async () => {
-    try {
-      const activeTimer = await getActiveTimer();
-      if (!activeTimer) {
-        Alert.alert('Error', 'No active timer found.');
-        return;
+  // Load active timer on component mount
+  useEffect(() => {
+    const loadActiveTimer = async () => {
+      try {
+        const activeTimer = await getActiveTimer();
+        if (activeTimer) {
+          setTimerId(activeTimer.id);
+          setCheckInIntervals(activeTimer.checkInIntervals || []);
+          setMinutes(activeTimer.minutes);
+          setStartTime(activeTimer.startTime);
+
+          // Calculate elapsed time and remaining seconds
+          const start = new Date(activeTimer.startTime).getTime();
+          const now = Date.now();
+          const elapsedMs = now - start;
+          const totalSeconds = activeTimer.minutes * 60;
+          const secondsLeft = Math.max(0, totalSeconds - Math.floor(elapsedMs / 1000));
+          
+          if (secondsLeft > 0) {
+            setSecondsRemaining(secondsLeft);
+            setIsRunning(true);
+          } else {
+            // Timer has expired
+            await markTimerInactive(activeTimer.id);
+            setTimerId(null);
+            setStartTime(null);
+            setCheckInIntervals([]);
+          }
+        }
+      } catch (error) {
+        console.error('Error loading active timer:', error);
       }
-      setTimerId(activeTimer.id);
-      setCheckInIntervals(activeTimer.checkInIntervals || []);
-      setSecondsRemaining(minutes * 60);
-      setIsRunning(true);
-    } catch (error) {
-      Alert.alert('Error', 'Failed to fetch timer data. Please try saving again.');
-    }
-  };
+    };
+    loadActiveTimer();
+  }, []);
 
   // Handle countdown logic and check-in detection
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
-    if (isRunning && secondsRemaining > 0) {
+    if (isRunning && secondsRemaining > 0 && startTime) {
       interval = setInterval(() => {
-        setSecondsRemaining((prev) => {
-          if (prev <= 1) {
-            setIsRunning(false);
-            setShowCheckInButton(false);
-            setNextCheckIn(null);
-            if (timerId) {
-              markTimerInactive(timerId).catch((error) => {
-                console.error('Failed to mark timer as inactive:', error);
-              });
-            }
-            return 0;
-          }
-          return prev - 1;
-        });
+        const now = Date.now();
+        const start = new Date(startTime).getTime();
+        const elapsedMs = now - start;
+        const totalSeconds = minutes * 60;
+        const newSecondsRemaining = Math.max(0, totalSeconds - Math.floor(elapsedMs / 1000));
 
-        // Calculate elapsed time in milliseconds
-        const elapsedTime = (minutes * 60 - secondsRemaining) * 1000;
+        setSecondsRemaining(newSecondsRemaining);
+
+        if (newSecondsRemaining <= 0) {
+          setIsRunning(false);
+          setShowCheckInButton(false);
+          setNextCheckIn(null);
+          if (timerId) {
+            markTimerInactive(timerId).catch((error) => {
+              console.error('Failed to mark timer as inactive:', error);
+            });
+          }
+          setTimerId(null);
+          setStartTime(null);
+          return;
+        }
+
+        // Calculate elapsed time in milliseconds for check-ins
+        const elapsedTime = elapsedMs;
 
         // Find the next check-in
         const upcomingCheckIn = checkInIntervals.find(
@@ -71,8 +98,11 @@ const TimerComponent: React.FC = () => {
         setNextCheckIn(next || null);
 
         // Check for missed check-in (2 minutes = 120,000 ms)
-        if (showCheckInButton && lastCheckInTime && Date.now() - lastCheckInTime > 120000) {
-          console.log('Missed check-in at:', new Date().toISOString());
+        if (showCheckInButton && lastCheckInTime && Date.now() - lastCheckInTime > 120000 && timerId) {
+          const checkInTime = new Date().toISOString();
+          logCheckInStatus(timerId, 'missed', checkInTime).catch((error) => {
+            console.error('Failed to log missed check-in:', error);
+          });
           setShowCheckInButton(false);
           setLastCheckInTime(null);
         }
@@ -81,7 +111,7 @@ const TimerComponent: React.FC = () => {
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [isRunning, secondsRemaining, checkInIntervals, showCheckInButton, lastCheckInTime, timerId]);
+  }, [isRunning, secondsRemaining, checkInIntervals, showCheckInButton, lastCheckInTime, timerId, startTime, minutes]);
 
   // Format time as MM:SS
   const formatTime = (seconds: number) => {
@@ -92,9 +122,13 @@ const TimerComponent: React.FC = () => {
 
   // Format next check-in time
   const formatNextCheckIn = (interval: number) => {
-    const remainingMs = interval - (minutes * 60 - secondsRemaining) * 1000;
+    if (!startTime) return '00:00';
+    const start = new Date(startTime).getTime();
+    const now = Date.now();
+    const elapsedMs = now - start;
+    const remainingMs = interval - elapsedMs;
     const remainingSeconds = Math.floor(remainingMs / 1000);
-    return formatTime(remainingSeconds);
+    return formatTime(Math.max(0, remainingSeconds));
   };
 
   const updateMinutes = (change: number) => {
@@ -118,7 +152,13 @@ const TimerComponent: React.FC = () => {
       setTimerName('');
       setCheckIns('');
       setTimerId(timerId);
-      startTimer(); // Automatically start the timer after saving
+      setStartTime(new Date().toISOString());
+      setSecondsRemaining(minutes * 60);
+      setIsRunning(true);
+      const activeTimer = await getActiveTimer();
+      if (activeTimer) {
+        setCheckInIntervals(activeTimer.checkInIntervals || []);
+      }
     } catch (error: any) {
       Alert.alert('Error', error.message || 'Failed to save timer. Please try again.');
     }
@@ -138,9 +178,16 @@ const TimerComponent: React.FC = () => {
       });
     }
     setTimerId(null);
+    setStartTime(null);
   };
 
   const handleCheckIn = () => {
+    if (timerId) {
+      const checkInTime = new Date().toISOString();
+      logCheckInStatus(timerId, 'completed', checkInTime).catch((error) => {
+        console.error('Failed to log check-in:', error);
+      });
+    }
     console.log('Check-in recorded at:', new Date().toISOString());
     setShowCheckInButton(false);
     setLastCheckInTime(null);
