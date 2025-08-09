@@ -1,3 +1,4 @@
+import { enableScreens } from 'react-native-screens';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet } from 'react-native';
 import {
@@ -20,6 +21,7 @@ import { RootStackParamList } from './types/navigation';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
+enableScreens();
 
 function AppNavigator() {
   const { user, loading } = useAuth();
@@ -32,10 +34,7 @@ function AppNavigator() {
         {user ? (
           <Stack.Screen name="Home" component={HomeScreen} />
         ) : (
-          <>
-            <Stack.Screen name="Landing" component={LandingScreen} />
-            <Stack.Screen name="Home" component={HomeScreen} />
-          </>
+          <Stack.Screen name="Landing" component={LandingScreen} />
         )}
       </Stack.Navigator>
     </NavigationContainer>
@@ -55,12 +54,14 @@ export default function App() {
   if (!fontsLoaded) return null;
 
   return (
+    <SafeAreaProvider>
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <SafeAreaProvider>
+      
         <AuthProvider>
           <AppNavigator />
         </AuthProvider>
-      </SafeAreaProvider>
+      
     </GestureHandlerRootView>
+    </SafeAreaProvider>
   );
 }

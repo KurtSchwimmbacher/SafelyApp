@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { Colors, Spacing, Typography } from '../styles/GlobalStyles';
+import { Colors, GlobalStyles, Spacing, Typography } from '../styles/GlobalStyles';
 
 interface TimerCountdownProps {
   secondsRemaining: number;
@@ -31,14 +31,17 @@ const TimerCountdown: React.FC<TimerCountdownProps> = ({
           Next Check-in: {formatNextCheckIn(nextCheckIn)}
         </Text>
       )}
-      {showCheckInButton && (
-        <TouchableOpacity style={styles.checkInButton} onPress={handleCheckIn}>
-          <Text style={styles.checkInButtonText}>Check In</Text>
-        </TouchableOpacity>
-      )}
+      
       <TouchableOpacity style={[styles.button, styles.stopButton]} onPress={stopTimer}>
         <Text style={styles.buttonText}>Stop</Text>
       </TouchableOpacity>
+
+
+      {showCheckInButton && (
+        <TouchableOpacity style={GlobalStyles.fullWidthButton} onPress={handleCheckIn}>
+          <Text style={GlobalStyles.buttonText}>Check In</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
@@ -64,20 +67,7 @@ const styles = StyleSheet.create({
     color: Colors.midDark,
     marginBottom: Spacing.md,
   },
-  checkInButton: {
-    backgroundColor: Colors.primary,
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: Spacing.lg,
-  },
-  checkInButtonText: {
-    color: Colors.white,
-    fontSize: 24,
-    fontFamily: 'JosefinSans_400Regular',
-  },
+
   button: {
     backgroundColor: Colors.primary,
     width: 40,

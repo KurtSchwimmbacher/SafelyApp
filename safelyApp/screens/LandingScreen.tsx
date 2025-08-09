@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { GlobalStyles, Typography, Spacing } from '../styles/GlobalStyles';
-import { View, Text, TouchableOpacity, SafeAreaView } from 'react-native';
+import { View, Text, TouchableOpacity} from 'react-native';
 import LoginModal from '../components/LoginModal';
 import RegisterModal from '../components/RegisterModal';
 import { RegisterProvider } from '../contexts/RegisterContext';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types/navigation';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
 
 export default function LandingScreen() {
   const [modalType, setModalType] = useState<'login' | 'register' | null>(null);
@@ -16,8 +18,6 @@ export default function LandingScreen() {
     console.log("Login / sign up success")
     // close modal
     setModalType(null);
-    // navigate to home
-    navigation.replace('Home');
   }
 
   return (

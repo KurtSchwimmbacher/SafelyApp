@@ -1,7 +1,8 @@
 import React from "react";
-import { View, Text, StyleSheet, SafeAreaView } from "react-native";
+import { View, Text, StyleSheet} from "react-native";
 import { Colors, Spacing, Typography } from "../styles/GlobalStyles";
 import TimerComponent from "../components/TimerComponent";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const HomeScreen = () => {
   return (

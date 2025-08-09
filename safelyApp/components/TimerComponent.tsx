@@ -45,7 +45,7 @@ const TimerComponent: React.FC = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       {isRunning ? (
         <TimerCountdown
           secondsRemaining={secondsRemaining}
@@ -67,7 +67,7 @@ const TimerComponent: React.FC = () => {
           handleSaveTimer={handleSaveTimer}
         />
       )}
-    </SafeAreaView>
+    </View>
   );
 };
 
