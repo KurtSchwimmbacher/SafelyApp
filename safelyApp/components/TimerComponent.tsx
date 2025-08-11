@@ -1,5 +1,3 @@
-// Main component that orchestrates the timer
-
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Colors, Spacing } from '../styles/GlobalStyles';
@@ -13,6 +11,7 @@ const TimerComponent: React.FC = () => {
     minutes,
     timerName,
     checkIns,
+    checkInContact,
     isRunning,
     secondsRemaining,
     nextCheckIn,
@@ -20,21 +19,19 @@ const TimerComponent: React.FC = () => {
     setMinutes,
     setTimerName,
     setCheckIns,
+    setCheckInContact,
     handleSaveTimer,
     handleCheckIn,
-    stopTimer
   } = useTimer();
 
-  // Format time as MM:SS
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // Format next check-in time
   const formatNextCheckIn = (interval: number) => {
-    const { startTime, minutes } = useTimer();
+    const { startTime } = useTimer();
     if (!startTime) return '00:00';
     const start = new Date(startTime).getTime();
     const now = Date.now();
@@ -54,16 +51,17 @@ const TimerComponent: React.FC = () => {
           formatTime={formatTime}
           formatNextCheckIn={formatNextCheckIn}
           handleCheckIn={handleCheckIn}
-          stopTimer={stopTimer}
         />
       ) : (
         <TimerSetup
           minutes={minutes}
           timerName={timerName}
           checkIns={checkIns}
+          checkInContact={checkInContact}
           setMinutes={setMinutes}
           setTimerName={setTimerName}
           setCheckIns={setCheckIns}
+          setCheckInContact={setCheckInContact}
           handleSaveTimer={handleSaveTimer}
         />
       )}

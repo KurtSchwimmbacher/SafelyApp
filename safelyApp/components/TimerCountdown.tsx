@@ -1,5 +1,3 @@
-// UI for countdown screen (timer display, check-in button)
-
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Colors, Spacing, Typography } from '../styles/GlobalStyles';
@@ -11,7 +9,6 @@ interface TimerCountdownProps {
   formatTime: (seconds: number) => string;
   formatNextCheckIn: (interval: number) => string;
   handleCheckIn: () => void;
-  stopTimer: () => void;
 }
 
 const TimerCountdown: React.FC<TimerCountdownProps> = ({
@@ -21,24 +18,27 @@ const TimerCountdown: React.FC<TimerCountdownProps> = ({
   formatTime,
   formatNextCheckIn,
   handleCheckIn,
-  stopTimer
 }) => {
   return (
     <View style={styles.countdownContainer}>
-      <Text style={styles.countdownText}>{formatTime(secondsRemaining)}</Text>
+      <Text style={styles.countdownText}>
+        {formatTime(secondsRemaining)}
+      </Text>
+
       {nextCheckIn !== null && (
         <Text style={styles.nextCheckInText}>
           Next Check-in: {formatNextCheckIn(nextCheckIn)}
         </Text>
       )}
+
       {showCheckInButton && (
-        <TouchableOpacity style={styles.checkInButton} onPress={handleCheckIn}>
+        <TouchableOpacity
+          style={styles.checkInButton}
+          onPress={handleCheckIn}
+        >
           <Text style={styles.checkInButtonText}>Check In</Text>
         </TouchableOpacity>
       )}
-      <TouchableOpacity style={[styles.button, styles.stopButton]} onPress={stopTimer}>
-        <Text style={styles.buttonText}>Stop</Text>
-      </TouchableOpacity>
     </View>
   );
 };
@@ -86,10 +86,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: Spacing.md,
-  },
-  stopButton: {
-    width: 100,
-    backgroundColor: Colors.darker,
   },
   buttonText: {
     color: Colors.white,

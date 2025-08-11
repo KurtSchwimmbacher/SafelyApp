@@ -1,17 +1,17 @@
-// UI for setting up the timer (inputs, SVG, buttons)
-
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, TextInput } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
-import { Colors, Spacing, Typography } from '../styles/GlobalStyles';
+import { Colors, GlobalStyles, Spacing, Typography } from '../styles/GlobalStyles';
 
 interface TimerSetupProps {
   minutes: number;
   timerName: string;
   checkIns: string;
+  checkInContact: string;
   setMinutes: (minutes: number) => void;
   setTimerName: (name: string) => void;
   setCheckIns: (checkIns: string) => void;
+  setCheckInContact: (contact: string) => void;
   handleSaveTimer: () => Promise<void>;
 }
 
@@ -19,9 +19,11 @@ const TimerSetup: React.FC<TimerSetupProps> = ({
   minutes,
   timerName,
   checkIns,
+  checkInContact,
   setMinutes,
   setTimerName,
   setCheckIns,
+  setCheckInContact,
   handleSaveTimer
 }) => {
   const updateMinutes = (change: number) => {
@@ -30,20 +32,14 @@ const TimerSetup: React.FC<TimerSetupProps> = ({
   };
 
   return (
-    <View style={styles.timerContainer}>
+    <View style={[GlobalStyles.container, {width:'100%', alignItems:'center'}]}>
       <TextInput
-        style={styles.input}
+        style={[styles.input, {marginBottom: 5}]}
         placeholder="Timer Name"
         value={timerName}
         onChangeText={setTimerName}
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Number of Check-ins"
-        value={checkIns}
-        onChangeText={setCheckIns}
-        keyboardType="numeric"
-      />
+      
       <Svg height="250" width="250" viewBox="0 0 200 200">
         <Circle
           cx="100"
@@ -71,14 +67,30 @@ const TimerSetup: React.FC<TimerSetupProps> = ({
       </Svg>
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button} onPress={() => updateMinutes(-1)}>
-          <Text style={styles.buttonText}>-</Text>
+          <Text style={GlobalStyles.buttonText}>-</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={() => updateMinutes(1)}>
-          <Text style={styles.buttonText}>+</Text>
+          <Text style={GlobalStyles.buttonText}>+</Text>
         </TouchableOpacity>
       </View>
-      <TouchableOpacity style={[styles.button, styles.saveButton]} onPress={handleSaveTimer}>
-        <Text style={styles.buttonText}>Save</Text>
+      
+      <TextInput
+        style={[styles.input, {marginBottom: 10}]}
+        placeholder="Number of Check-ins"
+        value={checkIns}
+        onChangeText={setCheckIns}
+        keyboardType="number-pad"
+      />
+
+      <TextInput
+        style={[styles.input, {marginBottom: 10}]}
+        placeholder="Check-in Contact (e.g., email or phone)"
+        value={checkInContact}
+        onChangeText={setCheckInContact}
+      />
+
+      <TouchableOpacity style={[GlobalStyles.fullWidthButton, { marginTop: Spacing.lg, width: '100%' }]} onPress={handleSaveTimer}>
+        <Text style={GlobalStyles.buttonText}>Save</Text>
       </TouchableOpacity>
     </View>
   );
@@ -87,10 +99,6 @@ const TimerSetup: React.FC<TimerSetupProps> = ({
 export default TimerSetup;
 
 const styles = StyleSheet.create({
-  timerContainer: {
-    position: 'relative',
-    alignItems: 'center',
-  },
   timerText: {
     ...Typography.title,
     fontSize: 48,
@@ -105,7 +113,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: 80,
+    width: 100,
     marginTop: Spacing.md,
   },
   button: {
@@ -116,14 +124,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: Spacing.md,
-  },
-  saveButton: {
-    width: 100,
-    marginTop: Spacing.lg,
-  },
-  buttonText: {
-    color: Colors.white,
-    fontSize: 20,
   },
   input: {
     height: 40,

@@ -1,5 +1,3 @@
-// Custom hook for timer and check-in logic
-
 import { useState, useEffect } from 'react';
 import { Alert } from 'react-native';
 import { getActiveTimer, saveTimer, markTimerInactive, logCheckInStatus, Timer } from '../services/timersService';
@@ -8,6 +6,7 @@ export interface TimerState {
   minutes: number;
   timerName: string;
   checkIns: string;
+  checkInContact: string;
   isRunning: boolean;
   secondsRemaining: number;
   checkInIntervals: number[];
@@ -18,15 +17,26 @@ export interface TimerState {
   setMinutes: (minutes: number) => void;
   setTimerName: (name: string) => void;
   setCheckIns: (checkIns: string) => void;
+  setCheckInContact: (contact: string) => void;
   handleSaveTimer: () => Promise<void>;
   handleCheckIn: () => void;
   stopTimer: () => void;
 }
 
+const sendMissedCheckInNotification = async (contact: string, timerName: string) => {
+  try {
+    console.log(`Sending notification to ${contact} for missed check-in on timer "${timerName}"`);
+    // Replace with actual notification logic (e.g., Firebase Cloud Messaging, email, SMS)
+  } catch (error) {
+    console.error('Error sending notification:', error);
+  }
+};
+
 export const useTimer = (): TimerState => {
   const [minutes, setMinutes] = useState(17);
   const [timerName, setTimerName] = useState('');
   const [checkIns, setCheckIns] = useState('');
+  const [checkInContact, setCheckInContact] = useState('');
   const [isRunning, setIsRunning] = useState(false);
   const [secondsRemaining, setSecondsRemaining] = useState(0);
   const [checkInIntervals, setCheckInIntervals] = useState<number[]>([]);
@@ -36,7 +46,6 @@ export const useTimer = (): TimerState => {
   const [timerId, setTimerId] = useState<string | null>(null);
   const [startTime, setStartTime] = useState<string | null>(null);
 
-  // Load active timer on mount
   useEffect(() => {
     const loadActiveTimer = async () => {
       try {
@@ -46,6 +55,7 @@ export const useTimer = (): TimerState => {
           setCheckInIntervals(activeTimer.checkInIntervals || []);
           setMinutes(activeTimer.minutes);
           setStartTime(activeTimer.startTime);
+          setCheckInContact(activeTimer.checkInContact || '');
 
           const start = new Date(activeTimer.startTime).getTime();
           const now = Date.now();
@@ -61,6 +71,7 @@ export const useTimer = (): TimerState => {
             setTimerId(null);
             setStartTime(null);
             setCheckInIntervals([]);
+            setCheckInContact('');
           }
         }
       } catch (error) {
@@ -70,11 +81,10 @@ export const useTimer = (): TimerState => {
     loadActiveTimer();
   }, []);
 
-  // Handle countdown and check-in logic
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
     if (isRunning && secondsRemaining > 0 && startTime) {
-      interval = setInterval(() => {
+      interval = setInterval(async () => {
         const now = Date.now();
         const start = new Date(startTime).getTime();
         const elapsedMs = now - start;
@@ -88,12 +98,13 @@ export const useTimer = (): TimerState => {
           setShowCheckInButton(false);
           setNextCheckIn(null);
           if (timerId) {
-            markTimerInactive(timerId).catch((error) => {
+            await markTimerInactive(timerId).catch((error) => {
               console.error('Failed to mark timer as inactive:', error);
             });
           }
           setTimerId(null);
           setStartTime(null);
+          setCheckInContact('');
           return;
         }
 
@@ -112,9 +123,12 @@ export const useTimer = (): TimerState => {
 
         if (showCheckInButton && lastCheckInTime && Date.now() - lastCheckInTime > 120000 && timerId) {
           const checkInTime = new Date().toISOString();
-          logCheckInStatus(timerId, 'missed', checkInTime).catch((error) => {
+          await logCheckInStatus(timerId, 'missed', checkInTime).catch((error) => {
             console.error('Failed to log missed check-in:', error);
           });
+          if (checkInContact) {
+            await sendMissedCheckInNotification(checkInContact, timerName);
+          }
           setShowCheckInButton(false);
           setLastCheckInTime(null);
         }
@@ -123,7 +137,7 @@ export const useTimer = (): TimerState => {
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [isRunning, secondsRemaining, checkInIntervals, showCheckInButton, lastCheckInTime, timerId, startTime, minutes]);
+  }, [isRunning, secondsRemaining, checkInIntervals, showCheckInButton, lastCheckInTime, timerId, startTime, minutes, checkInContact, timerName]);
 
   const handleSaveTimer = async () => {
     try {
@@ -136,10 +150,11 @@ export const useTimer = (): TimerState => {
         Alert.alert('Error', 'Timer duration must be greater than 0 minutes.');
         return;
       }
-      const timerId = await saveTimer(minutes, timerName, checkInsNum);
+      const timerId = await saveTimer(minutes, timerName, checkInsNum, checkInContact);
       Alert.alert('Success', `Timer${timerName ? ` "${timerName}"` : ''} saved to your profile!`);
       setTimerName('');
       setCheckIns('');
+      setCheckInContact('');
       setTimerId(timerId);
       setStartTime(new Date().toISOString());
       setSecondsRemaining(minutes * 60);
@@ -161,6 +176,7 @@ export const useTimer = (): TimerState => {
     setNextCheckIn(null);
     setShowCheckInButton(false);
     setLastCheckInTime(null);
+    setCheckInContact('');
     if (timerId) {
       markTimerInactive(timerId).catch((error) => {
         console.error('Failed to mark timer as inactive:', error);
@@ -186,6 +202,7 @@ export const useTimer = (): TimerState => {
     minutes,
     timerName,
     checkIns,
+    checkInContact,
     isRunning,
     secondsRemaining,
     checkInIntervals,
@@ -196,6 +213,7 @@ export const useTimer = (): TimerState => {
     setMinutes,
     setTimerName,
     setCheckIns,
+    setCheckInContact,
     handleSaveTimer,
     handleCheckIn,
     stopTimer
