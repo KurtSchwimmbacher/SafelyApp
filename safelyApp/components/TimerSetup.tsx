@@ -1,6 +1,7 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, TextInput } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, TextInput, Modal, FlatList } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
+import * as Contacts from 'expo-contacts';
 import { Colors, GlobalStyles, Spacing, Typography } from '../styles/GlobalStyles';
 
 interface TimerSetupProps {
@@ -26,20 +27,42 @@ const TimerSetup: React.FC<TimerSetupProps> = ({
   setCheckInContact,
   handleSaveTimer
 }) => {
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [contacts, setContacts] = useState<Contacts.Contact[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      const { status } = await Contacts.requestPermissionsAsync();
+      if (status === 'granted') {
+        const { data } = await Contacts.getContactsAsync({
+          fields: [Contacts.Fields.PhoneNumbers],
+        });
+        setContacts(data);
+      }
+    })();
+  }, []);
+
   const updateMinutes = (change: number) => {
     const newMinutes = Math.max(0, Math.min(60, minutes + change));
     setMinutes(newMinutes);
   };
 
+  const selectContact = (contact: Contacts.Contact) => {
+    if (contact.phoneNumbers && contact.phoneNumbers.length > 0) {
+      setCheckInContact(contact.phoneNumbers[0].number ?? '');
+    }
+    setModalVisible(false);
+  };
+
   return (
-    <View style={[GlobalStyles.container, {width:'100%', alignItems:'center'}]}>
+    <View style={[GlobalStyles.container, { width: '100%', alignItems: 'center' }]}>
       <TextInput
-        style={[styles.input, {marginBottom: 5}]}
+        style={[styles.input, { marginBottom: 5 }]}
         placeholder="Timer Name"
         value={timerName}
         onChangeText={setTimerName}
       />
-      
+
       <Svg height="250" width="250" viewBox="0 0 200 200">
         <Circle
           cx="100"
@@ -65,6 +88,7 @@ const TimerSetup: React.FC<TimerSetupProps> = ({
           <Text style={styles.timerUnit}>Minutes</Text>
         </Text>
       </Svg>
+
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button} onPress={() => updateMinutes(-1)}>
           <Text style={GlobalStyles.buttonText}>-</Text>
@@ -73,25 +97,63 @@ const TimerSetup: React.FC<TimerSetupProps> = ({
           <Text style={GlobalStyles.buttonText}>+</Text>
         </TouchableOpacity>
       </View>
-      
+
       <TextInput
-        style={[styles.input, {marginBottom: 10}]}
+        style={[styles.input, { marginBottom: 10 }]}
         placeholder="Number of Check-ins"
         value={checkIns}
         onChangeText={setCheckIns}
         keyboardType="number-pad"
       />
 
-      <TextInput
-        style={[styles.input, {marginBottom: 10}]}
-        placeholder="Check-in Contact (e.g., email or phone)"
-        value={checkInContact}
-        onChangeText={(text) => {
-          setCheckInContact(text);
-        }}
-      />
+      {/* Contact Selection Button */}
+      <TouchableOpacity
+        style={[styles.input, { justifyContent: 'center' }]}
+        onPress={() => setModalVisible(true)}
+      >
+        <Text style={{ color: checkInContact ? Colors.midDark : Colors.darkLight }}>
+          {checkInContact || 'Select Check-in Contact'}
+        </Text>
+      </TouchableOpacity>
 
-      <TouchableOpacity style={[GlobalStyles.fullWidthButton, { marginTop: Spacing.lg, width: '100%' }]} onPress={handleSaveTimer}>
+      {/* Built-in React Native Modal */}
+      <Modal
+        visible={isModalVisible}
+        animationType="slide"
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalContent}>
+          <Text style={styles.modalTitle}>Select a Contact</Text>
+          <FlatList
+            data={contacts}
+            keyExtractor={(item, index) => item.id ?? index.toString()}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                style={styles.contactItem}
+                onPress={() => selectContact(item)}
+              >
+                <Text style={styles.contactName}>{item.name}</Text>
+                {item.phoneNumbers?.[0]?.number && (
+                  <Text style={styles.contactNumber}>
+                    {item.phoneNumbers[0].number}
+                  </Text>
+                )}
+              </TouchableOpacity>
+            )}
+          />
+          <TouchableOpacity
+            style={[GlobalStyles.fullWidthButton, { marginTop: Spacing.md }]}
+            onPress={() => setModalVisible(false)}
+          >
+            <Text style={GlobalStyles.buttonText}>Cancel</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
+
+      <TouchableOpacity
+        style={[GlobalStyles.fullWidthButton, { marginTop: Spacing.lg, width: '100%' }]}
+        onPress={handleSaveTimer}
+      >
         <Text style={GlobalStyles.buttonText}>Save</Text>
       </TouchableOpacity>
     </View>
@@ -138,5 +200,28 @@ const styles = StyleSheet.create({
     fontSize: Spacing.md,
     color: Colors.midDark,
     fontFamily: 'JosefinSans_400Regular',
+  },
+  modalContent: {
+    flex: 1,
+    backgroundColor: 'white',
+    padding: Spacing.md,
+  },
+  modalTitle: {
+    ...Typography.title,
+    marginBottom: Spacing.md,
+    textAlign: 'center',
+  },
+  contactItem: {
+    paddingVertical: Spacing.sm,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.darkLight,
+  },
+  contactName: {
+    fontSize: 16,
+    fontWeight: '500',
+  },
+  contactNumber: {
+    fontSize: 14,
+    color: Colors.midDark,
   },
 });
