@@ -62,14 +62,18 @@ export const useTimer = (): TimerState => {
           setTimerId(activeTimer.id);
           setCheckInIntervals(activeTimer.checkInIntervals || []);
           setMinutes(activeTimer.minutes);
-          setStartTime(activeTimer.startTime);
+          setTimerName(activeTimer.timerName || ''); // Preserve timerName
           setCheckInContact(activeTimer.checkInContact || '');
+
+          setStartTime(activeTimer.startTime);
 
           const start = new Date(activeTimer.startTime).getTime();
           const now = Date.now();
           const elapsedMs = now - start;
           const totalSeconds = activeTimer.minutes * 60;
           const secondsLeft = Math.max(0, totalSeconds - Math.floor(elapsedMs / 1000));
+
+          
 
           if (secondsLeft > 0) {
             setSecondsRemaining(secondsLeft);
@@ -80,6 +84,8 @@ export const useTimer = (): TimerState => {
             setStartTime(null);
             setCheckInIntervals([]);
             setCheckInContact('');
+            setTimerName('');
+            
           }
         }
       } catch (error) {
@@ -114,6 +120,7 @@ export const useTimer = (): TimerState => {
           setTimerId(null);
           setStartTime(null);
           setCheckInContact('');
+          setTimerName('');
           return;
         }
 
@@ -125,6 +132,7 @@ export const useTimer = (): TimerState => {
         if (upcomingCheckIn && !showCheckInButton) {
           setShowCheckInButton(true);
           setLastCheckInTime(Date.now());
+          
         }
 
         const next = checkInIntervals.find((interval) => interval > elapsedTime);
@@ -140,11 +148,14 @@ export const useTimer = (): TimerState => {
 
         if (showCheckInButton && lastCheckInTime && Date.now() - lastCheckInTime > 30000 && timerId) {
           const checkInTime = new Date().toISOString();
+          
           await logCheckInStatus(timerId, 'missed', checkInTime).catch((error) => {
             console.error('Failed to log missed check-in:', error);
           });
           if (checkInContact) {
             await sendMissedCheckInNotification(checkInContact, timerName);
+          } else {
+            console.log('No checkInContact provided, skipping notification');
           }
           setShowCheckInButton(false);
           setLastCheckInTime(null);
@@ -169,9 +180,9 @@ export const useTimer = (): TimerState => {
       }
       const timerId = await saveTimer(minutes, timerName, checkInsNum, checkInContact);
       Alert.alert('Success', `Timer${timerName ? ` "${timerName}"` : ''} saved to your profile!`);
+      // Do not reset checkInContact 
       setTimerName('');
       setCheckIns('');
-      setCheckInContact('');
       setTimerId(timerId);
       setStartTime(new Date().toISOString());
       setSecondsRemaining(minutes * 60);
@@ -179,6 +190,7 @@ export const useTimer = (): TimerState => {
       const activeTimer = await getActiveTimer();
       if (activeTimer) {
         setCheckInIntervals(activeTimer.checkInIntervals || []);
+        setCheckInContact(activeTimer.checkInContact || ''); 
       }
     } catch (error: any) {
       Alert.alert('Error', error.message || 'Failed to save timer. Please try again.');
@@ -195,6 +207,7 @@ export const useTimer = (): TimerState => {
     setShowCheckInButton(false);
     setLastCheckInTime(null);
     setCheckInContact('');
+    setTimerName('');
     if (timerId) {
       markTimerInactive(timerId).catch((error) => {
         console.error('Failed to mark timer as inactive:', error);
@@ -211,7 +224,6 @@ export const useTimer = (): TimerState => {
         console.error('Failed to log check-in:', error);
       });
     }
-    console.log('Check-in recorded at:', new Date().toISOString());
     setShowCheckInButton(false);
     setLastCheckInTime(null);
   };

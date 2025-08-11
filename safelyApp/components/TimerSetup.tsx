@@ -86,7 +86,9 @@ const TimerSetup: React.FC<TimerSetupProps> = ({
         style={[styles.input, {marginBottom: 10}]}
         placeholder="Check-in Contact (e.g., email or phone)"
         value={checkInContact}
-        onChangeText={setCheckInContact}
+        onChangeText={(text) => {
+          setCheckInContact(text);
+        }}
       />
 
       <TouchableOpacity style={[GlobalStyles.fullWidthButton, { marginTop: Spacing.lg, width: '100%' }]} onPress={handleSaveTimer}>
