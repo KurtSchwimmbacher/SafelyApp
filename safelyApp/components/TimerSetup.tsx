@@ -5,15 +5,15 @@ import * as Contacts from 'expo-contacts';
 import { Colors, GlobalStyles, Spacing, Typography } from '../styles/GlobalStyles';
 
 interface TimerSetupProps {
-  minutes: number;
-  timerName: string;
-  checkIns: string;
-  checkInContact: string;
-  setMinutes: (minutes: number) => void;
-  setTimerName: (name: string) => void;
-  setCheckIns: (checkIns: string) => void;
-  setCheckInContact: (contact: string) => void;
-  handleSaveTimer: () => Promise<void>;
+  minutes: number; // Timer duration in minutes
+  timerName: string; // Name of the timer
+  checkIns: string; // Number of check-ins as a string (to handle text input)
+  checkInContact: string; // Selected contact for check-ins
+  setMinutes: (minutes: number) => void; // State setter for minutes
+  setTimerName: (name: string) => void; // State setter for timer name
+  setCheckIns: (checkIns: string) => void; // State setter for number of check-ins
+  setCheckInContact: (contact: string) => void; // State setter for contact
+  handleSaveTimer: () => Promise<void>; // Function to save the timer
 }
 
 const TimerSetup: React.FC<TimerSetupProps> = ({
@@ -27,35 +27,42 @@ const TimerSetup: React.FC<TimerSetupProps> = ({
   setCheckInContact,
   handleSaveTimer
 }) => {
+  // State for showing/hiding the contact selection modal
   const [isModalVisible, setModalVisible] = useState(false);
+
+  // State to store the list of contacts fetched from the device
   const [contacts, setContacts] = useState<Contacts.Contact[]>([]);
 
+  // Fetch contacts when component mounts
   useEffect(() => {
     (async () => {
       const { status } = await Contacts.requestPermissionsAsync();
       if (status === 'granted') {
         const { data } = await Contacts.getContactsAsync({
-          fields: [Contacts.Fields.PhoneNumbers],
+          fields: [Contacts.Fields.PhoneNumbers], // Include phone numbers
         });
-        setContacts(data);
+        setContacts(data); // Save contact list to state
       }
     })();
   }, []);
 
+  // Update minutes by a given change (e.g., +1 or -1), clamping between 0 and 60
   const updateMinutes = (change: number) => {
     const newMinutes = Math.max(0, Math.min(60, minutes + change));
     setMinutes(newMinutes);
   };
 
+  // When a contact is selected from the modal
   const selectContact = (contact: Contacts.Contact) => {
     if (contact.phoneNumbers && contact.phoneNumbers.length > 0) {
       setCheckInContact(contact.phoneNumbers[0].number ?? '');
     }
-    setModalVisible(false);
+    setModalVisible(false); // Close modal
   };
 
   return (
     <View style={[GlobalStyles.container, { width: '100%', alignItems: 'center' }]}>
+      {/* Timer name input */}
       <TextInput
         style={[styles.input, { marginBottom: 5 }]}
         placeholder="Timer Name"
@@ -63,7 +70,9 @@ const TimerSetup: React.FC<TimerSetupProps> = ({
         onChangeText={setTimerName}
       />
 
+      {/* Circular timer visualization */}
       <Svg height="250" width="250" viewBox="0 0 200 200">
+        {/* Background circle */}
         <Circle
           cx="100"
           cy="100"
@@ -72,6 +81,7 @@ const TimerSetup: React.FC<TimerSetupProps> = ({
           strokeWidth="20"
           fill="none"
         />
+        {/* Progress circle based on minutes */}
         <Circle
           cx="100"
           cy="100"
@@ -82,6 +92,7 @@ const TimerSetup: React.FC<TimerSetupProps> = ({
           strokeDasharray={[2 * Math.PI * 90 * (minutes / 60), 2 * Math.PI * 90]}
           strokeDashoffset={(-0.25 * 2 * Math.PI * 270)}
         />
+        {/* Text in center of circle */}
         <Text style={styles.timerText}>
           {minutes}
           {'\n'}
@@ -89,6 +100,7 @@ const TimerSetup: React.FC<TimerSetupProps> = ({
         </Text>
       </Svg>
 
+      {/* Plus/minus buttons for adjusting minutes */}
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button} onPress={() => updateMinutes(-1)}>
           <Text style={GlobalStyles.buttonText}>-</Text>
@@ -98,6 +110,7 @@ const TimerSetup: React.FC<TimerSetupProps> = ({
         </TouchableOpacity>
       </View>
 
+      {/* Number of check-ins input */}
       <TextInput
         style={[styles.input, { marginBottom: 10 }]}
         placeholder="Number of Check-ins"
@@ -106,7 +119,7 @@ const TimerSetup: React.FC<TimerSetupProps> = ({
         keyboardType="number-pad"
       />
 
-      {/* Contact Selection Button */}
+      {/* Contact selection field (opens modal) */}
       <TouchableOpacity
         style={[styles.input, { justifyContent: 'center' }]}
         onPress={() => setModalVisible(true)}
@@ -116,7 +129,7 @@ const TimerSetup: React.FC<TimerSetupProps> = ({
         </Text>
       </TouchableOpacity>
 
-      {/* Built-in React Native Modal */}
+      {/* Modal for selecting a contact */}
       <Modal
         visible={isModalVisible}
         animationType="slide"
@@ -141,6 +154,7 @@ const TimerSetup: React.FC<TimerSetupProps> = ({
               </TouchableOpacity>
             )}
           />
+          {/* Cancel button to close modal */}
           <TouchableOpacity
             style={[GlobalStyles.fullWidthButton, { marginTop: Spacing.md }]}
             onPress={() => setModalVisible(false)}
@@ -150,6 +164,7 @@ const TimerSetup: React.FC<TimerSetupProps> = ({
         </View>
       </Modal>
 
+      {/* Save button */}
       <TouchableOpacity
         style={[GlobalStyles.fullWidthButton, { marginTop: Spacing.lg, width: '100%' }]}
         onPress={handleSaveTimer}
