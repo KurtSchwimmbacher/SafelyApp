@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Alert } from 'react-native';
 import { getActiveTimer, saveTimer, markTimerInactive, logCheckInStatus, Timer } from '../services/timersService';
+import { sendSMS, sendWhatsApp } from '../services/messageService';
 
 export interface TimerState {
   minutes: number;
@@ -24,10 +25,16 @@ export interface TimerState {
   stopTimer: () => void;
 }
 
+
 const sendMissedCheckInNotification = async (contact: string, timerName: string) => {
   try {
-    console.log(`Sending notification to ${contact} for missed check-in on timer "${timerName}"`);
-    // Replace with actual notification logic (e.g., Firebase Cloud Messaging, email, SMS)
+    const message = `Alert: ${timerName ? `"${timerName}"` : 'Your timer'} missed a check-in!`;
+    if (contact.startsWith('+')) {
+      // Send WhatsApp first, fallback to SMS
+      await sendWhatsApp(contact, message).catch(() => sendSMS(contact, message));
+    } else {
+      await sendSMS(contact, message);
+    }
   } catch (error) {
     console.error('Error sending notification:', error);
   }
