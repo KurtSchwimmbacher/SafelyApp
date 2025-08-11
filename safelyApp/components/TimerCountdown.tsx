@@ -1,5 +1,3 @@
-// UI for countdown screen (timer display, check-in button)
-
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Colors, GlobalStyles, Spacing, Typography } from '../styles/GlobalStyles';
@@ -7,39 +5,38 @@ import { Colors, GlobalStyles, Spacing, Typography } from '../styles/GlobalStyle
 interface TimerCountdownProps {
   secondsRemaining: number;
   nextCheckIn: number | null;
+  nextCheckInTime: string | null;
   showCheckInButton: boolean;
   formatTime: (seconds: number) => string;
-  formatNextCheckIn: (interval: number) => string;
   handleCheckIn: () => void;
-  stopTimer: () => void;
 }
 
 const TimerCountdown: React.FC<TimerCountdownProps> = ({
   secondsRemaining,
   nextCheckIn,
+  nextCheckInTime,
   showCheckInButton,
   formatTime,
-  formatNextCheckIn,
   handleCheckIn,
-  stopTimer
 }) => {
   return (
     <View style={styles.countdownContainer}>
-      <Text style={styles.countdownText}>{formatTime(secondsRemaining)}</Text>
-      {nextCheckIn !== null && (
+      <Text style={styles.countdownText}>
+        {formatTime(secondsRemaining)}
+      </Text>
+
+      {nextCheckIn !== null && nextCheckInTime !== null && (
         <Text style={styles.nextCheckInText}>
-          Next Check-in: {formatNextCheckIn(nextCheckIn)}
+          Next Check-in: {nextCheckInTime}
         </Text>
       )}
-      
-      <TouchableOpacity style={[styles.button, styles.stopButton]} onPress={stopTimer}>
-        <Text style={styles.buttonText}>Stop</Text>
-      </TouchableOpacity>
-
 
       {showCheckInButton && (
-        <TouchableOpacity style={GlobalStyles.fullWidthButton} onPress={handleCheckIn}>
-          <Text style={GlobalStyles.buttonText}>Check In</Text>
+        <TouchableOpacity
+          style={styles.checkInButton}
+          onPress={handleCheckIn}
+        >
+          <Text style={styles.checkInButtonText}>Check In</Text>
         </TouchableOpacity>
       )}
     </View>
@@ -76,10 +73,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: Spacing.md,
-  },
-  stopButton: {
-    width: 100,
-    backgroundColor: Colors.darker,
   },
   buttonText: {
     color: Colors.white,
