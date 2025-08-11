@@ -11,6 +11,7 @@ export interface TimerState {
   secondsRemaining: number;
   checkInIntervals: number[];
   nextCheckIn: number | null;
+  nextCheckInTime: string | null;
   showCheckInButton: boolean;
   timerId: string | null;
   startTime: string | null;
@@ -32,6 +33,12 @@ const sendMissedCheckInNotification = async (contact: string, timerName: string)
   }
 };
 
+const formatTime = (seconds: number) => {
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+};
+
 export const useTimer = (): TimerState => {
   const [minutes, setMinutes] = useState(17);
   const [timerName, setTimerName] = useState('');
@@ -41,6 +48,7 @@ export const useTimer = (): TimerState => {
   const [secondsRemaining, setSecondsRemaining] = useState(0);
   const [checkInIntervals, setCheckInIntervals] = useState<number[]>([]);
   const [nextCheckIn, setNextCheckIn] = useState<number | null>(null);
+  const [nextCheckInTime, setNextCheckInTime] = useState<string | null>(null);
   const [showCheckInButton, setShowCheckInButton] = useState(false);
   const [lastCheckInTime, setLastCheckInTime] = useState<number | null>(null);
   const [timerId, setTimerId] = useState<string | null>(null);
@@ -97,6 +105,7 @@ export const useTimer = (): TimerState => {
           setIsRunning(false);
           setShowCheckInButton(false);
           setNextCheckIn(null);
+          setNextCheckInTime(null);
           if (timerId) {
             await markTimerInactive(timerId).catch((error) => {
               console.error('Failed to mark timer as inactive:', error);
@@ -121,7 +130,15 @@ export const useTimer = (): TimerState => {
         const next = checkInIntervals.find((interval) => interval > elapsedTime);
         setNextCheckIn(next || null);
 
-        if (showCheckInButton && lastCheckInTime && Date.now() - lastCheckInTime > 120000 && timerId) {
+        if (next) {
+          const remainingMs = next - elapsedMs;
+          const remainingSeconds = Math.floor(remainingMs / 1000);
+          setNextCheckInTime(formatTime(Math.max(0, remainingSeconds)));
+        } else {
+          setNextCheckInTime(null);
+        }
+
+        if (showCheckInButton && lastCheckInTime && Date.now() - lastCheckInTime > 30000 && timerId) {
           const checkInTime = new Date().toISOString();
           await logCheckInStatus(timerId, 'missed', checkInTime).catch((error) => {
             console.error('Failed to log missed check-in:', error);
@@ -174,6 +191,7 @@ export const useTimer = (): TimerState => {
     setMinutes(17);
     setCheckInIntervals([]);
     setNextCheckIn(null);
+    setNextCheckInTime(null);
     setShowCheckInButton(false);
     setLastCheckInTime(null);
     setCheckInContact('');
@@ -207,6 +225,7 @@ export const useTimer = (): TimerState => {
     secondsRemaining,
     checkInIntervals,
     nextCheckIn,
+    nextCheckInTime,
     showCheckInButton,
     timerId,
     startTime,

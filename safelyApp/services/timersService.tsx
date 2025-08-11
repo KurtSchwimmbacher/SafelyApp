@@ -36,7 +36,7 @@ export const saveTimer = async (minutes: number, tName: string, checkIns: number
     const checkInIntervals = checkIns > 0
       ? Array.from(
           { length: checkIns },
-          (_, i) => Math.round((minutes / checkIns) * (i + 1) * 60 * 1000)
+          (_, i) => Math.round((minutes / 2 / checkIns) * (i + 1) * 60 * 1000)
         )
       : [];
 
@@ -60,7 +60,6 @@ export const saveTimer = async (minutes: number, tName: string, checkIns: number
   }
 };
 
-// Function to retrieve the user's currently active timer from Firestore
 export const getActiveTimer = async (): Promise<Timer | null> => {
   try {
     const auth = getAuth();
@@ -97,7 +96,6 @@ export const getActiveTimer = async (): Promise<Timer | null> => {
   }
 };
 
-// Function to mark a timer as inactive in Firestore
 export const markTimerInactive = async (timerId: string): Promise<void> => {
   try {
     const db = getFirestore();

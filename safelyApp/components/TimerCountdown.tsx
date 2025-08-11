@@ -5,18 +5,18 @@ import { Colors, Spacing, Typography } from '../styles/GlobalStyles';
 interface TimerCountdownProps {
   secondsRemaining: number;
   nextCheckIn: number | null;
+  nextCheckInTime: string | null;
   showCheckInButton: boolean;
   formatTime: (seconds: number) => string;
-  formatNextCheckIn: (interval: number) => string;
   handleCheckIn: () => void;
 }
 
 const TimerCountdown: React.FC<TimerCountdownProps> = ({
   secondsRemaining,
   nextCheckIn,
+  nextCheckInTime,
   showCheckInButton,
   formatTime,
-  formatNextCheckIn,
   handleCheckIn,
 }) => {
   return (
@@ -25,9 +25,9 @@ const TimerCountdown: React.FC<TimerCountdownProps> = ({
         {formatTime(secondsRemaining)}
       </Text>
 
-      {nextCheckIn !== null && (
+      {nextCheckIn !== null && nextCheckInTime !== null && (
         <Text style={styles.nextCheckInText}>
-          Next Check-in: {formatNextCheckIn(nextCheckIn)}
+          Next Check-in: {nextCheckInTime}
         </Text>
       )}
 

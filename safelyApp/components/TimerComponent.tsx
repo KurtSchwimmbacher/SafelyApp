@@ -15,6 +15,7 @@ const TimerComponent: React.FC = () => {
     isRunning,
     secondsRemaining,
     nextCheckIn,
+    nextCheckInTime,
     showCheckInButton,
     setMinutes,
     setTimerName,
@@ -30,26 +31,15 @@ const TimerComponent: React.FC = () => {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const formatNextCheckIn = (interval: number) => {
-    const { startTime } = useTimer();
-    if (!startTime) return '00:00';
-    const start = new Date(startTime).getTime();
-    const now = Date.now();
-    const elapsedMs = now - start;
-    const remainingMs = interval - elapsedMs;
-    const remainingSeconds = Math.floor(remainingMs / 1000);
-    return formatTime(Math.max(0, remainingSeconds));
-  };
-
   return (
     <SafeAreaView style={styles.container}>
       {isRunning ? (
         <TimerCountdown
           secondsRemaining={secondsRemaining}
           nextCheckIn={nextCheckIn}
+          nextCheckInTime={nextCheckInTime}
           showCheckInButton={showCheckInButton}
           formatTime={formatTime}
-          formatNextCheckIn={formatNextCheckIn}
           handleCheckIn={handleCheckIn}
         />
       ) : (
