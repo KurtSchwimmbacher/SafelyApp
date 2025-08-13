@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, TextInput, Modal, FlatList } 
 import Svg, { Circle } from 'react-native-svg';
 import * as Contacts from 'expo-contacts';
 import { Colors, GlobalStyles, Spacing, Typography } from '../styles/GlobalStyles';
+import CircularKnob from './CircularKnob';
 
 interface TimerSetupProps {
   minutes: number; // Timer duration in minutes
@@ -71,43 +72,8 @@ const TimerSetup: React.FC<TimerSetupProps> = ({
       />
 
       {/* Circular timer visualization */}
-      <Svg height="250" width="250" viewBox="0 0 200 200">
-        {/* Background circle */}
-        <Circle
-          cx="100"
-          cy="100"
-          r="90"
-          stroke={Colors.darker}
-          strokeWidth="20"
-          fill="none"
-        />
-        {/* Progress circle based on minutes */}
-        <Circle
-          cx="100"
-          cy="100"
-          r="90"
-          stroke={Colors.primary}
-          strokeWidth="20"
-          fill="none"
-          strokeDasharray={[2 * Math.PI * 90 * (minutes / 60), 2 * Math.PI * 90]}
-          strokeDashoffset={(-0.25 * 2 * Math.PI * 270)}
-        />
-        {/* Text in center of circle */}
-        <Text style={styles.timerText}>
-          {minutes}
-          {'\n'}
-          <Text style={styles.timerUnit}>Minutes</Text>
-        </Text>
-      </Svg>
-
-      {/* Plus/minus buttons for adjusting minutes */}
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={() => updateMinutes(-1)}>
-          <Text style={GlobalStyles.buttonText}>-</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => updateMinutes(1)}>
-          <Text style={GlobalStyles.buttonText}>+</Text>
-        </TouchableOpacity>
+      <View style={styles.sliderContainer}>
+        <CircularKnob value={minutes} onChange={(value) => setMinutes(Math.round(value))} />
       </View>
 
       {/* Number of check-ins input */}
@@ -184,6 +150,14 @@ const styles = StyleSheet.create({
     top: '130%',
     textAlign: 'center',
     color: Colors.black,
+  },
+  sliderContainer: {
+    width: 250,
+    height: 250,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: Spacing.md,
+    marginBottom: Spacing.md,
   },
   timerUnit: {
     fontSize: 18,
