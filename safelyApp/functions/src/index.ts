@@ -1,69 +1,47 @@
-import * as functions from 'firebase-functions';
-import * as admin from 'firebase-admin';
-import twilio from 'twilio';
+// functions/src/index.ts
+import { onCall } from "firebase-functions/v2/https";
+import * as logger from "firebase-functions/logger";
+import twilio from "twilio";
+import * as dotenv from "dotenv";
 
-admin.initializeApp();
+// Load .env variables
+dotenv.config();
 
-// Load Twilio credentials from Firebase config
-const accountSid = functions.config().twilio.sid;
-const authToken = functions.config().twilio.token;
-const twilioPhone = functions.config().twilio.phone;
+const accountSid = process.env.TWILIO_SID;
+const authToken = process.env.TWILIO_TOKEN;
+const twilioPhone = process.env.TWILIO_PHONE;
 
 if (!accountSid || !authToken || !twilioPhone) {
-  throw new Error('Twilio credentials are not configured. Please run: firebase functions:config:set twilio.sid="..." twilio.token="..." twilio.phone="..."');
+  throw new Error("Twilio environment variables are missing!");
 }
 
 const client = twilio(accountSid, authToken);
 
-// Define the expected data shape
-interface SendSafetyAlertData {
-  phoneNumbers: string[];
-  message?: string;
-}
+export const sendSafetyAlert = onCall(
+  {
+    memory: "256MiB",
+    timeoutSeconds: 60,
+    region: "us-central1",
+  },
+  async (request) => {
+    const { phoneNumber, message } = request.data;
 
-/**
- * Cloud Function to send a safety timer SMS alert.
- * Trigger: HTTPS callable
- */
-export const sendSafetyAlert = functions.https.onCall(
-  async (request: functions.https.CallableRequest<SendSafetyAlertData>, context: any) => {
-    // Extract data from the request
-    const { phoneNumbers, message } = request.data;
-
-    // Validate authentication
-    if (!context?.auth) {
-      throw new functions.https.HttpsError(
-        'unauthenticated',
-        'You must be signed in to trigger an alert.'
-      );
-    }
-
-    // Validate input
-    if (!phoneNumbers || !Array.isArray(phoneNumbers) || phoneNumbers.length === 0) {
-      throw new functions.https.HttpsError(
-        'invalid-argument',
-        'Phone numbers are required.'
-      );
+    if (!phoneNumber || !message) {
+      throw new Error("Missing phoneNumber or message in request data.");
     }
 
     try {
-      const results = await Promise.all(
-        phoneNumbers.map((number) =>
-          client.messages.create({
-            body: message || 'Safety timer expired. Please check in.',
-            from: twilioPhone,
-            to: number,
-          })
-        )
-      );
+      const response = await client.messages.create({
+        body: message,
+        from: twilioPhone,
+        to: phoneNumber,
+      });
 
-      return { success: true, results };
+      logger.info("SMS sent:", response.sid);
+      return { success: true, sid: response.sid };
     } catch (error) {
-      console.error('Twilio error:', error);
-      throw new functions.https.HttpsError(
-        'internal',
-        'Failed to send SMS alert.'
-      );
+      logger.error("Failed to send SMS:", error);
+      throw new Error("Failed to send SMS");
     }
   }
 );
