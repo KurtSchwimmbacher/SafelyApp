@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Alert } from 'react-native';
 import { getActiveTimer, saveTimer, markTimerInactive, logCheckInStatus, Timer } from '../services/timersService';
-import { sendSMS, sendWhatsApp } from '../services/messageService';
+import { sendSMS } from '../services/messageService';
 
 /**
  * Interface defining the shape of our timer state and actions.
@@ -34,12 +34,11 @@ export interface TimerState {
 const sendMissedCheckInNotification = async (contact: string, timerName: string) => {
   try {
     const message = `Alert: ${timerName ? `"${timerName}"` : 'Your timer'} missed a check-in!`;
-    if (contact.startsWith('+')) {
-      // Assume numbers starting with "+" are international → try WhatsApp first
-      await sendWhatsApp(contact, message).catch(() => sendSMS(contact, message));
-    } else {
-      await sendSMS(contact, message);
-    }
+
+    // Send regular SMS via Twilio
+    await sendSMS(contact, message);
+
+
   } catch (error) {
     console.error('Error sending notification:', error);
   }
