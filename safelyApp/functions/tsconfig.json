@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "module": "commonjs", // Change from NodeNext to commonjs for Firebase Functions compatibility
+    "esModuleInterop": true,
+    "moduleResolution": "node", // Change from nodenext to node
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "outDir": "lib",
+    "sourceMap": true,
+    "strict": true,
+    "target": "es2017",
+    "typeRoots": ["node_modules/@types", "node_modules/firebase-functions/types"] // Ensure type resolution
+  },
+  "compileOnSave": true,
+  "include": ["src"]
+}
