@@ -1,15 +1,16 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet } from 'react-native';
 import {
-  useFonts as useYesevaFonts,
-  YesevaOne_400Regular,
-} from '@expo-google-fonts/yeseva-one';
+  useFonts as useInterFonts,
+  Inter_400Regular,
+  Inter_500Medium,
+  Inter_600SemiBold,
+} from '@expo-google-fonts/inter';
 import {
-  useFonts as useJosefinFonts,
-  JosefinSans_400Regular,
-  JosefinSans_700Bold,
-  JosefinSans_300Light,
-} from '@expo-google-fonts/josefin-sans';
+  useFonts as useSpaceGroteskFonts,
+  SpaceGrotesk_400Regular,
+  SpaceGrotesk_700Bold,
+} from '@expo-google-fonts/space-grotesk';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import LandingScreen from './screens/LandingScreen';
@@ -43,14 +44,17 @@ function AppNavigator() {
 }
 
 export default function App() {
-  const [yesevaLoaded] = useYesevaFonts({ YesevaOne_400Regular });
-  const [josefinLoaded] = useJosefinFonts({
-    JosefinSans_300Light,
-    JosefinSans_400Regular,
-    JosefinSans_700Bold,
+  const [interLoaded] = useInterFonts({
+    Inter_400Regular,
+    Inter_500Medium,
+    Inter_600SemiBold,
+  });
+  const [spaceGroteskLoaded] = useSpaceGroteskFonts({
+    SpaceGrotesk_400Regular,
+    SpaceGrotesk_700Bold,
   });
 
-  const fontsLoaded = yesevaLoaded && josefinLoaded;
+  const fontsLoaded = interLoaded && spaceGroteskLoaded;
 
   if (!fontsLoaded) return null;
 
