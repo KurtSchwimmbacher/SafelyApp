@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { Colors, GlobalStyles, Radius, Spacing, Typography } from '../styles/GlobalStyles';
+import { Colors, GlobalStyles, Radius, Spacing, Typography, Shadows } from '../styles/GlobalStyles';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import LoginForm from './formComponents/LoginForm';
 
@@ -11,37 +11,36 @@ interface LoginModalProps {
 }
 
 export default function LoginModal({ visible, onClose, onSuccess }: LoginModalProps) {
-    return (
-        <Modal
-            visible={visible}
-            animationType="slide"
-            transparent
-            onRequestClose={onClose}
-        >
+  return (
+    <Modal
+      visible={visible}
+      animationType="slide"
+      transparent
+      onRequestClose={onClose}
+    >
+      <View style={styles.overlay}>
+        <View style={[styles.content, Shadows.subtle]}>
+          {/* Header */}
+          <View style={styles.header}>
+            <View style={styles.sideSpacer} />
+            <Text style={[Typography.heading, styles.headerTitle, { color: Colors.darker }]}>
+              Login
+            </Text>
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={onClose}
+            >
+              <MaterialCommunityIcons name="close" size={24} color={Colors.dark} />
+            </TouchableOpacity>
+          </View>
 
-            <View style={styles.overlay}>
-                <View style={styles.content}>
-
-                    {/* header */}
-                    <View style={styles.header}>
-                        {/* spacer to balance the close icon */}
-                        <View style={styles.sideSpacer} />
-                        <Text style={[Typography.body, styles.headerTitle, { color: Colors.primaryLight }]}>Login</Text>
-                        <TouchableOpacity
-                            onPress={onClose}
-                            style={styles.closeButton}
-                        >
-                            <MaterialCommunityIcons name="close" size={24} color={Colors.primaryLight} />
-                        </TouchableOpacity>
-                    </View>
-
-                    {/* Login Form */}
-                    <View style={GlobalStyles.container}>
-                        <LoginForm onSuccess={onSuccess} />
-                    </View>
-                </View>
-            </View>
-        </Modal>
+          {/* Login Form */}
+          <View style={[GlobalStyles.container, { paddingVertical: Spacing.lg }]}>
+            <LoginForm onSuccess={onSuccess} />
+          </View>
+        </View>
+      </View>
+    </Modal>
   );
 }
 
@@ -49,26 +48,24 @@ const styles = StyleSheet.create({
   overlay: {
     flex: 1,
     justifyContent: 'flex-end',
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
   },
   content: {
     backgroundColor: Colors.white,
-    borderTopLeftRadius: Radius.lg,
-    borderTopRightRadius: Radius.lg,
-    minHeight: 800,
-    overflow: 'hidden',
+    borderTopLeftRadius: Radius.xl,
+    borderTopRightRadius: Radius.xl,
+    minHeight: 550,
   },
   header: {
-    height: Spacing.xl*2,
-    backgroundColor: Colors.white,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
     borderBottomWidth: 1,
-    borderColor: Colors.light,
-    paddingHorizontal: Spacing.lg,
+    borderColor: Colors.lighter,
   },
-  headerTitle:{
+  headerTitle: {
     flex: 1,
     textAlign: 'center',
   },
@@ -76,6 +73,6 @@ const styles = StyleSheet.create({
     padding: Spacing.sm,
   },
   sideSpacer: {
-  width: 32, // Same width as the close icon area for symmetry
-    },
+    width: 32, 
+  },
 });

@@ -78,7 +78,7 @@ export const Shadows = {
 export const GlobalStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.lightest,
+    backgroundColor: Colors.white,
     padding: Spacing.md,
   },
   centered: {

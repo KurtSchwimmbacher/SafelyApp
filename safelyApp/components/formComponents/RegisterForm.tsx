@@ -1,5 +1,5 @@
-import { View, StyleSheet, TextInput, TouchableOpacity, Text } from "react-native"
-import { Colors, GlobalStyles, Spacing, Typography } from "../../styles/GlobalStyles";
+import { View, StyleSheet, TextInput, TouchableOpacity, Text } from "react-native";
+import { Colors, GlobalStyles, Spacing, Typography, Radius, Shadows } from "../../styles/GlobalStyles";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useState } from "react";
 import { registerUser } from "../../services/authService";
@@ -10,143 +10,175 @@ interface RegisterFormProps {
   onContinue: () => void;
 }
 
+const RegisterForm = ({ onContinue }: RegisterFormProps) => {
+  const { setRegisterData } = useRegisterContext();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [errors, setErrors] = useState<{ email?: string; password?: string; confirmPassword?: string; general?: string }>({});
 
+  const register = async () => {
+    const emailError = validateEmail(email);
+    const passwordError = validatePassword(password);
+    const passwordMatchError = validatePasswordsMatch(password, confirmPassword);
 
-const RegisterForm = ({onContinue}: RegisterFormProps) => {
+    setErrors({
+      email: emailError || "",
+      password: passwordError || "",
+      confirmPassword: passwordMatchError || "",
+    });
 
-    const { setRegisterData } = useRegisterContext();
-
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
-
-    const [errors, setErrors] = useState<{ email?: string; password?: string; confirmPassword?: string, general?: string }>({});
-    
-
-    const register = async () => {
-        const emailError = validateEmail(email);
-        const passwordError = validatePassword(password);
-        const passwordMatchError = validatePasswordsMatch(password, confirmPassword)
-        
-        setErrors({
-            email: emailError || "",
-            password: passwordError || "",
-            confirmPassword: passwordMatchError || ""
-        });
-
-        if(!emailError && !passwordError && !passwordMatchError){
-            try {
-                const userCredential = await registerUser(email, password);
-                setRegisterData({ user: userCredential.user });
-               
-                onContinue(); // Call the onContinue prop to proceed after registration
-            } catch (error) {
-                setErrors({general: "Invalid Email or Password"})
-            }
-        }
+    if (!emailError && !passwordError && !passwordMatchError) {
+      try {
+        const userCredential = await registerUser(email, password);
+        setRegisterData({ user: userCredential.user });
+        onContinue();
+      } catch (error) {
+        setErrors({ general: "Invalid Email or Password" });
+      }
     }
+  };
 
-    return (
-        <View style={GlobalStyles.container}>
-            {/* main section */}
-            <TextInput
-                style={styles.inputField}
-                placeholder="Email"
-                keyboardType="email-address"
-                onChangeText={newText => setEmail(newText)}
-                defaultValue={email}
-            />
-            {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
+  return (
+    <View style={styles.container}>
+      {/* Main Section */}
+      <TextInput
+        style={[styles.input, Typography.body]}
+        placeholder="Enter your email"
+        placeholderTextColor={Colors.light}
+        value={email}
+        onChangeText={setEmail}
+        keyboardType="email-address"
+        autoCapitalize="none"
+      />
+      {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
 
-            <TextInput
-                style={styles.inputField}
-                placeholder="Password"
-                secureTextEntry={true}
-                onChangeText={newText => setPassword(newText)}
-                defaultValue={password}
-            />
-            {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
+      <TextInput
+        style={[styles.input, Typography.body]}
+        placeholder="Enter your password"
+        placeholderTextColor={Colors.light}
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry
+      />
+      {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
 
-            <TextInput
-                style={styles.inputField}
-                placeholder="Confirm Password"
-                secureTextEntry={true}
-                onChangeText={newText => setConfirmPassword(newText)}
-                defaultValue={confirmPassword}
-            />
-            {errors.confirmPassword && <Text style={styles.errorText}>{errors.confirmPassword}</Text>}
+      <TextInput
+        style={[styles.input, Typography.body]}
+        placeholder="Confirm your password"
+        placeholderTextColor={Colors.light}
+        value={confirmPassword}
+        onChangeText={setConfirmPassword}
+        secureTextEntry
+      />
+      {errors.confirmPassword && <Text style={styles.errorText}>{errors.confirmPassword}</Text>}
 
-            {errors.general && <Text style={[styles.errorText, {marginTop: Spacing.md}]}>{errors.general}</Text>}
-            <TouchableOpacity style={[GlobalStyles.fullWidthButton, { marginTop: Spacing.lg, width: '100%' }]}
-                onPress={register}>
-                <Text style={GlobalStyles.buttonText}>Continue</Text>
-            </TouchableOpacity>
+      {errors.general && (
+        <Text style={[styles.errorText, { marginTop: Spacing.sm }]}>
+          {errors.general}
+        </Text>
+      )}
 
-            {/* or breaker */}
-            <View style={styles.orBreaker}>
-                <View style={styles.line} />
-                <Text style={[Typography.muted ,styles.orText]}>or</Text>
-                <View style={styles.line} />
-            </View>
+      <TouchableOpacity
+        style={[GlobalStyles.fullWidthButton, styles.submitButton, Shadows.subtle]}
+        onPress={register}
+        activeOpacity={0.7}
+      >
+        <Text style={GlobalStyles.buttonText}>Continue</Text>
+      </TouchableOpacity>
 
-            {/* continue with other options section */}
-            {/* phone */}
-            <TouchableOpacity style={[GlobalStyles.outlineButtonFW, { width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }]}
-                onPress={() => console.log('phone pressed')}>
-                <MaterialCommunityIcons name="phone" size={24} color={Colors.primary} style={{ marginRight: 16  }} />
-                <Text style={GlobalStyles.outlineButtonText}>Continue with Phone</Text>
-            </TouchableOpacity>
+      {/* Or Breaker */}
+      <View style={styles.orBreaker}>
+        <View style={[styles.line, { backgroundColor: Colors.lighter }]} />
+        <Text style={[Typography.caption, styles.orText, { color: Colors.dark }]}>
+          or
+        </Text>
+        <View style={[styles.line, { backgroundColor: Colors.lighter }]} />
+      </View>
 
-            {/* Google */}
-            <TouchableOpacity style={[GlobalStyles.outlineButtonFW, {marginTop: Spacing.md, width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }]}
-                onPress={() => console.log('google pressed')}>
-                <MaterialCommunityIcons name="google" size={24} color={Colors.primary} style={{ marginRight: 16  }} />
-                <Text style={GlobalStyles.outlineButtonText}>Continue with Google</Text>
-            </TouchableOpacity>
-
-            {/* Apple */}
-            <TouchableOpacity style={[GlobalStyles.outlineButtonFW, {marginTop: Spacing.md, width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }]}
-                onPress={() => console.log('apple pressed')}>
-                <MaterialCommunityIcons name="apple" size={24} color={Colors.primary} style={{ marginRight: 16  }} />
-                <Text style={GlobalStyles.outlineButtonText}>Continue with Apple</Text>
-            </TouchableOpacity>
-            
-        </View>
-    )
-
-}
+      {/* Social Login Options */}
+      <View style={styles.socialButtons}>
+        <TouchableOpacity
+          style={[styles.socialButton, Shadows.subtle]}
+          onPress={() => console.log('Phone pressed')}
+          activeOpacity={0.7}
+        >
+          <MaterialCommunityIcons name="phone" size={18} color={Colors.base} />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.socialButton, Shadows.subtle]}
+          onPress={() => console.log('Google pressed')}
+          activeOpacity={0.7}
+        >
+          <MaterialCommunityIcons name="google" size={18} color={Colors.base} />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.socialButton, Shadows.subtle]}
+          onPress={() => console.log('Apple pressed')}
+          activeOpacity={0.7}
+        >
+          <MaterialCommunityIcons name="apple" size={18} color={Colors.base} />
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+};
 
 export default RegisterForm;
 
 const styles = StyleSheet.create({
-
-    inputField: {
-        height: 48,
-        borderWidth: 1,
-        borderColor: Colors.midDark,
-        marginTop: Spacing.md,
-        paddingHorizontal: 10,
-        fontFamily: 'JosefinSans_400Regular',
-        fontSize: Spacing.md,
-        borderRadius: Spacing.sm,
-        color: Colors.midDark,
-    },
-    orBreaker: {
+  container: {
+    width: '100%',
+    alignItems: 'center',
+    paddingHorizontal: Spacing.lg,
+  },
+  input: {
+    width: '100%',
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.lighter,
+    paddingVertical: Spacing.md,
+    paddingHorizontal: Spacing.md,
+    marginBottom: Spacing.lg,
+    color: Colors.darker,
+    height: 56
+  },
+  errorText: {
+    color: '#CC6666',
+    fontFamily: 'Inter_400Regular',
+    fontSize: 12,
+    marginTop: Spacing.xs,
+    alignSelf: 'flex-start',
+  },
+  submitButton: {
+    marginTop: Spacing.md,
+    marginBottom: Spacing.sm,
+  },
+  orBreaker: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 20,
-    },
-    line: {
-        flex: 1,
-        height: 1,
-        backgroundColor: Colors.darkLight,
-    },
-    orText: {
-        marginHorizontal: 10,
-    },
-   errorText: {
-    color: "red",
-    marginTop: 4,
-    fontSize: 12,
+    marginVertical: Spacing.sm,
+    width: '60%',
   },
-})
+  line: {
+    flex: 1,
+    height: 1,
+  },
+  orText: {
+    marginHorizontal: Spacing.xs,
+  },
+  socialButtons: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: Spacing.md,
+    marginTop: Spacing.sm,
+  },
+  socialButton: {
+    backgroundColor: Colors.lightest,
+    borderRadius: Radius.full,
+    padding: Spacing.md,
+    width: 48,
+    height: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
