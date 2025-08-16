@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Modal, View, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView, ScrollView, Platform } from 'react-native';
 import { Colors, GlobalStyles, Radius, Spacing, Typography, Shadows } from '../styles/GlobalStyles';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import RegisterForm from './formComponents/RegisterForm';
@@ -51,55 +51,63 @@ export default function RegisterModal({ visible, onClose, onSuccess }: RegisterM
       onRequestClose={onClose}
     >
       <View style={styles.overlay}>
-        <View style={[styles.content, step === 'notifications' && styles.shortContent, Shadows.subtle]}>
-          {/* Header */}
-          <View style={styles.header}>
-            {canGoBack ? (
-              <TouchableOpacity onPress={handleBack} style={styles.backButton}>
-                <MaterialCommunityIcons name="chevron-left" size={24} color={Colors.dark} />
-              </TouchableOpacity>
-            ) : (
-              <View style={styles.sideSpacer} />
-            )}
-            <Text style={[Typography.heading, styles.headerTitle, { color: Colors.darker }]}>
-              {stepTitles[step]}
-            </Text>
-            <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-              <MaterialCommunityIcons name="close" size={24} color={Colors.dark} />
-            </TouchableOpacity>
-          </View>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+          style={styles.keyboardAvoidingContainer}
+        >
+          <ScrollView contentContainerStyle={styles.scrollContent}>
+            <View style={[styles.content, step === 'notifications' && styles.shortContent, Shadows.subtle]}>
+              {/* Header */}
+              <View style={styles.header}>
+                {canGoBack ? (
+                  <TouchableOpacity onPress={handleBack} style={styles.backButton}>
+                    <MaterialCommunityIcons name="chevron-left" size={24} color={Colors.dark} />
+                  </TouchableOpacity>
+                ) : (
+                  <View style={styles.sideSpacer} />
+                )}
+                <Text style={[Typography.heading, styles.headerTitle, { color: Colors.darker }]}>
+                  {stepTitles[step]}
+                </Text>
+                <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+                  <MaterialCommunityIcons name="close" size={24} color={Colors.dark} />
+                </TouchableOpacity>
+              </View>
 
-          {/* Form Content */}
-          <View style={[GlobalStyles.container, { paddingVertical: Spacing.lg }]}>
-            {step === 'register' && (
-              <RegisterForm onContinue={() => setStep('confirm')} />
-            )}
-            {step === 'confirm' && (
-              <PhoneConfirmationForm
-                onContinue={() => setStep('details')}
-                onBack={() => setStep('register')}
-              />
-            )}
-            {step === 'details' && (
-              <FinishSigningUpForm
-                onContinue={() => setStep('feedback')}
-                onBack={() => setStep('confirm')}
-              />
-            )}
-            {step === 'feedback' && (
-              <FeedbackForm
-                onContinue={() => setStep('notifications')}
-                onBack={() => setStep('details')}
-              />
-            )}
-            {step === 'notifications' && (
-              <NotificationPermissionForm
-                onFinish={onSuccess}
-                onBack={() => setStep('feedback')}
-              />
-            )}
-          </View>
-        </View>
+              {/* Form Content */}
+              <View style={[GlobalStyles.container, { paddingVertical: Spacing.lg }]}>
+                {step === 'register' && (
+                  <RegisterForm onContinue={() => setStep('confirm')} />
+                )}
+                {step === 'confirm' && (
+                  <PhoneConfirmationForm
+                    onContinue={() => setStep('details')}
+                    onBack={() => setStep('register')}
+                  />
+                )}
+                {step === 'details' && (
+                  <FinishSigningUpForm
+                    onContinue={() => setStep('feedback')}
+                    onBack={() => setStep('confirm')}
+                  />
+                )}
+                {step === 'feedback' && (
+                  <FeedbackForm
+                    onContinue={() => setStep('notifications')}
+                    onBack={() => setStep('details')}
+                  />
+                )}
+                {step === 'notifications' && (
+                  <NotificationPermissionForm
+                    onFinish={onSuccess}
+                    onBack={() => setStep('feedback')}
+                  />
+                )}
+              </View>
+            </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
       </View>
     </Modal>
   );
@@ -111,11 +119,19 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     backgroundColor: 'rgba(0, 0, 0, 0.4)',
   },
+  keyboardAvoidingContainer: {
+    flex: 1,
+    justifyContent: 'flex-end',
+  },
+  scrollContent: {
+    flexGrow: 1,
+    justifyContent: 'flex-end',
+  },
   content: {
     backgroundColor: Colors.white,
     borderTopLeftRadius: Radius.xl,
     borderTopRightRadius: Radius.xl,
-    minHeight: 620,
+    minHeight: 500,
   },
   shortContent: {
     minHeight: 350,

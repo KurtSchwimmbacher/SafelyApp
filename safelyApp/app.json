@@ -24,6 +24,23 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      [
+        "expo-contacts",
+        {
+          "contactsPermission": "Allow Safely to access your contacts to provide a better experience."
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/icon.png",
+          "color": "#00A0A0",
+          "sounds": [],
+          "mode": "production"
+        }
+      ]
+    ]
   }
 }

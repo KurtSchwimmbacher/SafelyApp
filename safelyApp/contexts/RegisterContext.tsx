@@ -7,6 +7,7 @@ type RegisterData = {
   dateOfBirth: string;
   phoneNumber: string;
   personalizedNotifications: boolean;
+  notificationsEnabled?: boolean;
   contactsShared: boolean;
   user?: User;
 };

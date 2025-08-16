@@ -9,6 +9,7 @@ export interface userProfile {
     dateOfBirth: string;
     phoneNumber: string;
     notifications: boolean;
+    notificationsEnabled?: boolean;
     contactsShared: boolean;
     createdAt: string;
 }

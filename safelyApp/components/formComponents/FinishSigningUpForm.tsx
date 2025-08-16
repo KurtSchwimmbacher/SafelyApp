@@ -1,82 +1,116 @@
 import React from 'react';
 import { View, TextInput, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { Colors, Spacing, Typography, GlobalStyles } from '../../styles/GlobalStyles';
+import { Colors, Spacing, Typography, GlobalStyles, Shadows } from '../../styles/GlobalStyles';
 import { useRegisterContext } from '../../contexts/RegisterContext';
 
+interface RegisterData {
+  firstName?: string;
+  lastName?: string;
+  dateOfBirth?: string;
+  phoneNumber?: string;
+}
+
 const FinishSigningUpForm = ({ onContinue, onBack }: { onContinue: () => void; onBack: () => void }) => {
+  const { registerData, setRegisterData } = useRegisterContext();
 
-    // import context for registration 
-    const {registerData, setRegisterData} = useRegisterContext();
+  return (
+    <View style={styles.container}>
+      <Text style={[Typography.caption, { color: Colors.lighter, marginTop: Spacing.xs, alignSelf: 'center' }]}>
+        This information won’t be shared or made publicly visible.
+      </Text>
 
-    return (
-        <View>
-            <TextInput
-                style={[styles.inputField, { marginTop: 0 , borderBottomLeftRadius: 0, borderBottomRightRadius: 0, borderBottomWidth: 0}]}
-                placeholder="First Name"
-                value={registerData.firstName}
-                onChangeText={text => setRegisterData({firstName: text})}
-            />
-            <TextInput
-                style={[styles.inputField, { marginTop: 0 , borderTopLeftRadius: 0, borderTopRightRadius: 0}]}
-                placeholder="LastName"
-                value={registerData.lastName}
-                onChangeText={text => setRegisterData({lastName: text})}
-            />
+      <View style={styles.nameContainer}>
+        <TextInput
+          style={[styles.input, Typography.body]}
+          placeholder="First Name"
+          placeholderTextColor={Colors.light}
+          value={registerData.firstName || ''}
+          onChangeText={text => setRegisterData({ ...registerData, firstName: text })}
+          autoCapitalize="words"
+          textAlignVertical="center"
+        />
+        <TextInput
+          style={[styles.input, Typography.body, { borderTopWidth: 0 }]}
+          placeholder="Last Name"
+          placeholderTextColor={Colors.light}
+          value={registerData.lastName || ''}
+          onChangeText={text => setRegisterData({ ...registerData, lastName: text })}
+          autoCapitalize="words"
+          textAlignVertical="center"
+        />
+      </View>
 
-            <TextInput
-                style={styles.inputField}
-                placeholder="Date of Birth (YYYY-MM-DD)"
-                value={registerData.dateOfBirth}
-                onChangeText={text => setRegisterData({dateOfBirth: text})}
-            />
-            <Text style={{ color: Colors.darkLight, fontSize: 12, marginTop: 4, marginLeft: 2 }}>
-                This information won’t be shared or made publically visible.
-            </Text>
+      <TextInput
+        style={[styles.input, Typography.body]}
+        placeholder="Date of Birth (YYYY-MM-DD)"
+        placeholderTextColor={Colors.light}
+        value={registerData.dateOfBirth || ''}
+        onChangeText={text => setRegisterData({ ...registerData, dateOfBirth: text })}
+        textAlignVertical="center"
+      />
 
-            <TextInput
-                style={styles.inputField}
-                placeholder="Phone Number"
-                keyboardType='phone-pad'
-                value={registerData.phoneNumber}
-                onChangeText={text => setRegisterData({phoneNumber: text})}
-            />
-            <Text style={{ color: Colors.darkLight, fontSize: 12, marginTop: 4, marginLeft: 2 }}>
-                We'll only contact you for important updates.
-            </Text>
-    
 
-            <Text style={{ color: Colors.darkLight, fontSize: 12, marginTop: Spacing.xl, marginLeft: 2 }}>
-                By selecting Agree and Continue you agree to our
-                <Text style={{ color: Colors.primary, fontWeight: 'bold' }} onPress={() => console.log('Terms of Service pressed')}>
-                    {' '}Terms of Service{' '}
-                </Text>
-                and
-                <Text style={{ color: Colors.primary, fontWeight: 'bold' }} onPress={() => console.log('Privacy Policy pressed')}>
-                    {' '}Privacy Policy.
-                </Text>
-            </Text>
-            <TouchableOpacity
-                style={[GlobalStyles.fullWidthButton, {marginTop: Spacing.md, width: '100%' }]}
-                onPress={onContinue}
-            >
-                <Text style={GlobalStyles.buttonText}>Agree and Continue</Text>
-            </TouchableOpacity>
-        </View>
-    );
+      <TextInput
+        style={[styles.input, Typography.body]}
+        placeholder="Phone Number"
+        placeholderTextColor={Colors.light}
+        keyboardType="phone-pad"
+        value={registerData.phoneNumber || ''}
+        onChangeText={text => setRegisterData({ ...registerData, phoneNumber: text })}
+        textAlignVertical="center"
+      />
+
+      <Text style={[Typography.caption, { color: Colors.dark, marginTop: Spacing.lg, alignSelf: 'flex-start' }]}>
+        By selecting Agree and Continue, you agree to our{' '}
+        <Text
+          style={{ color: Colors.base, fontFamily: 'Inter_500Medium' }}
+          onPress={() => console.log('Terms of Service pressed')}
+        >
+          Terms of Service
+        </Text>{' '}
+        and{' '}
+        <Text
+          style={{ color: Colors.base, fontFamily: 'Inter_500Medium' }}
+          onPress={() => console.log('Privacy Policy pressed')}
+        >
+          Privacy Policy
+        </Text>.
+      </Text>
+
+      <TouchableOpacity
+        style={[GlobalStyles.fullWidthButton, styles.submitButton, Shadows.subtle, {marginTop: Spacing.xl, marginBottom: Spacing.xl*1.5}]}
+        onPress={onContinue}
+        activeOpacity={0.7}
+      >
+        <Text style={GlobalStyles.buttonText}>Agree and Continue</Text>
+      </TouchableOpacity>
+    </View>
+  );
 };
 
 export default FinishSigningUpForm;
 
 const styles = StyleSheet.create({
-  inputField: {
-    height: 48,
-    borderWidth: 1,
-    borderColor: Colors.midDark,
+  container: {
+    width: '100%',
+    alignItems: 'center',
+    paddingHorizontal: Spacing.lg,
+  },
+  nameContainer: {
+    width: '100%',
+    marginBottom: Spacing.lg,
+  },
+  input: {
+    width: '100%',
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.lighter,
+    paddingVertical: Spacing.md,
+    paddingHorizontal: Spacing.md,
+    marginBottom: Spacing.lg,
+    color: Colors.darker,
+    height: 56
+  },
+  submitButton: {
     marginTop: Spacing.md,
-    paddingHorizontal: 10,
-    fontFamily: 'JosefinSans_400Regular',
-    fontSize: Spacing.md,
-    borderRadius: Spacing.sm,
-    color: Colors.midDark,
   },
 });

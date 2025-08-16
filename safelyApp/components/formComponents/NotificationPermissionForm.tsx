@@ -1,79 +1,101 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { Colors, Spacing, Typography, GlobalStyles } from '../../styles/GlobalStyles';
+import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { Colors, Spacing, Typography, GlobalStyles, Shadows } from '../../styles/GlobalStyles';
 import { Switch } from 'react-native-gesture-handler';
 import { getAuth } from 'firebase/auth';
 import { createUserProfile } from '../../services/userService';
 import { useRegisterContext } from '../../contexts/RegisterContext';
+import * as Notifications from 'expo-notifications';
+
+interface RegisterData {
+  user?: { uid: string; email?: string | null };
+  firstName?: string;
+  lastName?: string;
+  dateOfBirth?: string;
+  phoneNumber?: string;
+  contactsShared?: boolean;
+  personalizedNotifications?: boolean;
+  notificationsEnabled?: boolean;
+}
 
 const NotificationPermissionForm = ({ onFinish, onBack }: { onFinish: () => void; onBack: () => void }) => {
-
-  // import context for registration 
-  const {registerData, setRegisterData} = useRegisterContext();
-
+  const { registerData, setRegisterData } = useRegisterContext();
   const [personalized, setPersonalized] = useState(true);
 
   const handleToggle = (value: boolean) => {
     setPersonalized(value);
-    setRegisterData({ personalizedNotifications: value });
+    setRegisterData({ ...registerData, personalizedNotifications: value });
   };
 
-
   const handleFinish = async () => {
-  const user = registerData.user;
+    const user = registerData.user;
+    if (!user) return;
 
-  if(!user) return;
     try {
+      const { status } = await Notifications.requestPermissionsAsync({
+        ios: {
+          allowAlert: true,
+          allowBadge: true,
+          allowSound: true,
+        },
+      });
+
+      const notificationsEnabled = status === 'granted';
+      setRegisterData({ ...registerData, notificationsEnabled });
+
       await createUserProfile({
         uid: user.uid,
         email: user.email ?? '',
-        firstName: registerData.firstName, 
+        firstName: registerData.firstName,
         lastName: registerData.lastName,
         dateOfBirth: registerData.dateOfBirth,
         phoneNumber: registerData.phoneNumber,
         notifications: personalized,
+        notificationsEnabled,
         contactsShared: registerData.contactsShared,
-        createdAt: new Date().toISOString(), 
+        createdAt: new Date().toISOString(),
       });
-      console.log("Created user")
+
       onFinish();
     } catch (error) {
-      console.log("Failed to store user profile", error);
+      console.error('Error requesting notifications permission or creating user profile:', error);
+      Alert.alert(
+        'Error',
+        'Failed to set up notifications or save profile. Please try again.',
+        [{ text: 'OK', onPress: () => onFinish() }]
+      );
     }
-
-  }
+  };
 
   return (
-    <View>
+    <View style={styles.container}>
+      <Text style={[Typography.subheading, { marginBottom: Spacing.sm, color: Colors.darker, textAlign: 'center' }]}>
+        Enable Notifications
+      </Text>
 
-        <Text style={[Typography.title, { marginBottom: Spacing.md, textAlign: 'center' }]}>
-            Enable Notifications
+      <Text style={[Typography.body, { marginBottom: Spacing.lg, color: Colors.dark, textAlign: 'center' }]}>
+        Stay up to date with important updates and alerts from Safely.
+      </Text>
+
+      <View style={styles.switchContainer}>
+        <Text style={[Typography.caption, { color: Colors.dark, flex: 1, marginRight: Spacing.sm }]}>
+          Get personalized recommendations and updates
         </Text>
+        <Switch
+          value={personalized}
+          onValueChange={handleToggle}
+          trackColor={{ false: Colors.lighter, true: Colors.base }}
+          thumbColor={personalized ? Colors.base : Colors.light}
+        />
+      </View>
 
-        <Text style={[Typography.body, { marginBottom: Spacing.md, textAlign: 'center' }]}>
-            Stay up to date with important updates and alerts.
-        </Text>
-    
-        <View style={styles.bar}>
-            <Text style={styles.barText}>Get personalised recommendations and more</Text>
-            <Switch
-                value={personalized}
-                onValueChange={handleToggle}
-                trackColor={{ false: Colors.light, true: Colors.primaryLight }}
-                thumbColor={personalized ? Colors.primary : Colors.light}
-            />
-        </View>
-
-        <TouchableOpacity
-            style={[GlobalStyles.fullWidthButton, { marginTop: Spacing.lg, width: '100%' }]}
-            onPress={() => {
-            //  request permission here with Expo Notifications API
-            console.log('Notification permission requested');
-            handleFinish();
-            }}
-        >
-            <Text style={GlobalStyles.buttonText}>Yes, notify me</Text>
-        </TouchableOpacity>
+      <TouchableOpacity
+        style={[GlobalStyles.fullWidthButton, styles.submitButton, Shadows.subtle]}
+        onPress={handleFinish}
+        activeOpacity={0.7}
+      >
+        <Text style={GlobalStyles.buttonText}>Yes, Notify Me</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -81,20 +103,21 @@ const NotificationPermissionForm = ({ onFinish, onBack }: { onFinish: () => void
 export default NotificationPermissionForm;
 
 const styles = StyleSheet.create({
-  bar: {
+  container: {
+    width: '100%',
+    alignItems: 'center',
+    paddingHorizontal: Spacing.lg,
+  },
+  switchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.lightest,
+    backgroundColor: Colors.white,
     borderRadius: Spacing.sm,
     padding: Spacing.md,
-    marginTop: Spacing.md,
-    marginBottom: Spacing.sm,
+    marginVertical: Spacing.md,
     justifyContent: 'space-between',
   },
-  barText: {
-    flex: 1,
-    color: Colors.midDark,
-    fontSize: 16,
-    marginRight: 12,
+  submitButton: {
+    marginTop: Spacing.md,
   },
 });
