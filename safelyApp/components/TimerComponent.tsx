@@ -1,10 +1,9 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Colors, Spacing } from '../styles/GlobalStyles';
-import TimerSetup from './TimerSetup';
+import TimerSetup from './timerSetup/TimerSetup';
 import TimerCountdown from './TimerCountdown';
 import { useTimer } from '../hooks/useTimer';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 const TimerComponent: React.FC = () => {
   const {
@@ -32,7 +31,7 @@ const TimerComponent: React.FC = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       {isRunning ? (
         <TimerCountdown
           secondsRemaining={secondsRemaining}
@@ -55,7 +54,7 @@ const TimerComponent: React.FC = () => {
           handleSaveTimer={handleSaveTimer}
         />
       )}
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -63,10 +62,9 @@ export default TimerComponent;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    padding: Spacing.lg,
+    width: '100%',
     backgroundColor: Colors.white,
-    justifyContent: 'center',
     alignItems: 'center',
+    justifyContent: 'flex-start',
   },
 });

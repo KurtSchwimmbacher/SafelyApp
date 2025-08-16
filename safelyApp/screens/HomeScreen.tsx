@@ -1,13 +1,19 @@
-import React from "react";
-import { View, Text, StyleSheet, SafeAreaView } from "react-native";
-import { Colors, Spacing, Typography } from "../styles/GlobalStyles";
-import TimerComponent from "../components/TimerComponent";
+import React from 'react';
+import { View, Text, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
+import { Colors, Spacing, Typography } from '../styles/GlobalStyles';
+import TimerComponent from '../components/TimerComponent';
 
 const HomeScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.heading}>Set Your Safety Timer</Text>
-      <TimerComponent />
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <Text style={[styles.heading, Typography.heading]}>
+          Set Your Safety Timer
+        </Text>
+        <View style={styles.timerContainer}>
+          <TimerComponent />
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -17,26 +23,21 @@ export default HomeScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: Spacing.lg,
-    justifyContent: "center",
     backgroundColor: Colors.white,
+    justifyContent: 'flex-start'
+  },
+  scrollContent: {
+    flexGrow: 1,
+    alignItems: 'center',
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.lg,
   },
   heading: {
-    ...Typography.title,
-    textAlign: "center",
-    marginBottom: Spacing.xl,
+    color: Colors.darker,
+    textAlign: 'center',
+    marginBottom: Spacing.lg,
   },
-  buttonRow: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    marginTop: Spacing.xl,
-  },
-  staticButton: {
-    backgroundColor: Colors.primary,
-    color: Colors.white,
-    paddingVertical: Spacing.md,
-    paddingHorizontal: Spacing.xl,
-    borderRadius: Spacing.sm,
-    fontWeight: "bold",
+  timerContainer: {
+    width: '100%',
   },
 });
