@@ -4,6 +4,7 @@ import { Colors, Spacing } from '../styles/GlobalStyles';
 import TimerSetup from './timerSetup/TimerSetup';
 import TimerCountdown from './TimerCountdown';
 import { useTimer } from '../hooks/useTimer';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const TimerComponent: React.FC = () => {
   const {
@@ -31,7 +32,7 @@ const TimerComponent: React.FC = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, isRunning && styles.centered]}>
       {isRunning ? (
         <TimerCountdown
           secondsRemaining={secondsRemaining}
@@ -62,9 +63,12 @@ export default TimerComponent;
 
 const styles = StyleSheet.create({
   container: {
-    width: '100%',
+    flex: 1,
     backgroundColor: Colors.white,
     alignItems: 'center',
-    justifyContent: 'flex-start',
+    justifyContent: 'flex-start', 
+  },
+  centered: {
+    justifyContent: 'center',     // used during countdown
   },
 });

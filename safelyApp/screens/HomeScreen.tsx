@@ -24,7 +24,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.white,
-    justifyContent: 'flex-start'
   },
   scrollContent: {
     flexGrow: 1,
@@ -38,6 +37,7 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.lg,
   },
   timerContainer: {
+    flex: 1,
     width: '100%',
   },
 });
