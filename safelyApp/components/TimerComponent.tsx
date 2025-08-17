@@ -32,10 +32,11 @@ const TimerComponent: React.FC = () => {
   };
 
   return (
-    <View style={[styles.container, isRunning && styles.centered]}>
+    <SafeAreaView style={styles.container}>
       {isRunning ? (
         <TimerCountdown
           secondsRemaining={secondsRemaining}
+          initialSeconds={minutes * 60}
           nextCheckIn={nextCheckIn}
           nextCheckInTime={nextCheckInTime}
           showCheckInButton={showCheckInButton}
@@ -55,7 +56,7 @@ const TimerComponent: React.FC = () => {
           handleSaveTimer={handleSaveTimer}
         />
       )}
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -64,11 +65,11 @@ export default TimerComponent;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.white,
+    backgroundColor: 'transparent', // Make transparent to show waves
     alignItems: 'center',
-    justifyContent: 'flex-start', 
+    justifyContent: 'flex-start',
   },
   centered: {
-    justifyContent: 'center',     // used during countdown
+    justifyContent: 'center', // Used during countdown
   },
 });
