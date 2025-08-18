@@ -28,12 +28,15 @@ const TimerCountdown: React.FC<TimerCountdownProps> = ({
 
   useEffect(() => {
     const progress = secondsRemaining / initialSeconds;
-    translateY.value = withTiming(progress * (screenHeight / 2), { duration: 1000 });
-  }, [secondsRemaining, initialSeconds]);
+    // Start full (0), end at full screen drain (screenHeight)
+    translateY.value = withTiming((1 - progress) * screenHeight, { duration: 1000 });
+}, [secondsRemaining, initialSeconds]);
+
 
   const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: -translateY.value }],
+    transform: [{ translateY: translateY.value }],
   }));
+
 
   return (
     <View style={styles.container}>
