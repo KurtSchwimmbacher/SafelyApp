@@ -23,7 +23,7 @@ const TimerCountdown: React.FC<TimerCountdownProps> = ({
   formatTime,
   handleCheckIn,
 }) => {
-  const screenHeight = Dimensions.get('window').height;
+  const screenHeight = Dimensions.get('window').height -200;
   const translateY = useSharedValue(0);
 
   useEffect(() => {
@@ -45,7 +45,7 @@ const TimerCountdown: React.FC<TimerCountdownProps> = ({
         <Wave 
           color={Colors.base} 
           amplitude={25} 
-          verticalOffset={screenHeight * 0.3} 
+          verticalOffset={screenHeight * 0.048} 
           opacity={1} 
           speed={4000} 
           fullHeight={screenHeight} 
@@ -53,7 +53,7 @@ const TimerCountdown: React.FC<TimerCountdownProps> = ({
         <Wave 
           color={Colors.base} 
           amplitude={30} 
-          verticalOffset={screenHeight * 0.31}  // Closer for more overlap
+          verticalOffset={screenHeight * 0.049}  // Closer for more overlap
           opacity={0.7} 
           speed={5000} 
           fullHeight={screenHeight} 
@@ -61,7 +61,7 @@ const TimerCountdown: React.FC<TimerCountdownProps> = ({
         <Wave 
           color={Colors.base} 
           amplitude={35} 
-          verticalOffset={screenHeight * 0.32}  // Closer for more overlap
+          verticalOffset={screenHeight * 0.05}  // Closer for more overlap
           opacity={0.5} 
           speed={6000} 
           fullHeight={screenHeight} 
