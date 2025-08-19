@@ -59,8 +59,6 @@ export const saveTimer = async (minutes: number, tName: string, checkIns: number
         )
       : [];
 
-    console.log('Saving timer with data:', { minutes, timerName: tName, checkIns, checkInContact, checkInIntervals });
-
     // Save the timer document
     const docRef = await addDoc(timersRef, {
       uid: user.uid,
@@ -115,7 +113,6 @@ export const getActiveTimer = async (): Promise<Timer | null> => {
 
     const timerDoc = querySnapshot.docs[0];
     const timerData = timerDoc.data();
-    console.log('Raw Firestore timer data:', timerData);
 
     return {
       id: timerDoc.id,

@@ -37,7 +37,6 @@ const sanitizePhoneNumber = (number: string) => {
     digits = "+" + digits;
   }
 
-  console.log("Sanitized phone number:", digits);
   return digits;
 };
 

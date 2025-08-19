@@ -21,19 +21,15 @@ const FeedbackForm = ({ onContinue, onBack }: { onContinue: () => void; onBack: 
 
   const setContacts = async () => {
     try {
-      console.log('Checking contacts permission status...');
       const { status, canAskAgain } = await Contacts.getPermissionsAsync();
-      console.log('Current permission status:', status, 'Can ask again:', canAskAgain);
 
       if (status === 'granted') {
-        console.log('Contacts permission already granted');
         setRegisterData({ ...registerData, contactsShared: true });
         onContinue();
         return;
       }
 
       if (!canAskAgain) {
-        console.log('Cannot ask for permission again, directing to settings');
         Alert.alert(
           'Permission Denied',
           'Access to contacts was previously denied. Please enable it in your device settings.',
@@ -42,9 +38,7 @@ const FeedbackForm = ({ onContinue, onBack }: { onContinue: () => void; onBack: 
         return;
       }
 
-      console.log('Requesting contacts permission...');
       const { status: newStatus } = await Contacts.requestPermissionsAsync();
-      console.log('New permission status:', newStatus);
 
       if (newStatus === 'granted') {
         setRegisterData({ ...registerData, contactsShared: true });

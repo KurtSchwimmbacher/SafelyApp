@@ -18,7 +18,6 @@ export const sendSMS = async (phoneNumber: string, message: string) => {
       throw new Error(result.data.error || "Twilio failed to send SMS");
     }
 
-    console.log("SMS sent via Twilio, SID:", result.data.sid);
   } catch (error) {
     console.error("Error sending SMS via Twilio:", error);
     throw error;
