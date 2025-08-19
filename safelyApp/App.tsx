@@ -29,15 +29,12 @@ function AppNavigator() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {user ? (
-          <Stack.Screen name="Home" component={HomeScreen} />
-        ) : (
-          <>
-            <Stack.Screen name="Landing" component={LandingScreen} />
-            <Stack.Screen name="Home" component={HomeScreen} />
-          </>
-        )}
+      <Stack.Navigator
+        screenOptions={{ headerShown: false }}
+        initialRouteName={user ? 'Home' : 'Landing'}
+      >
+        <Stack.Screen name="Landing" component={LandingScreen} />
+        <Stack.Screen name="Home" component={HomeScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
