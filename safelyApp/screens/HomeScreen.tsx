@@ -2,14 +2,16 @@ import React from 'react';
 import { View, Text, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 import { Colors, Spacing, Typography } from '../styles/GlobalStyles';
 import TimerComponent from '../components/TimerComponent';
+import SignOutButton from '../components/signOutButton';
+
 
 const HomeScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        <Text style={[styles.heading, Typography.heading]}>
-          Set Your Safety Timer
-        </Text>
+        <View style={styles.inlineHeader}>
+          <SignOutButton />
+        </View>
         <View style={styles.timerContainer}>
           <TimerComponent />
         </View>
@@ -31,9 +33,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.lg,
   },
-  heading: {
-    color: Colors.darker,
-    textAlign: 'center',
+  inlineHeader: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    width: '100%',
     marginBottom: Spacing.lg,
   },
   timerContainer: {
