@@ -31,14 +31,12 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     alignItems: 'center',
     paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.lg,
   },
   inlineHeader: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',
     width: '100%',
-    marginBottom: Spacing.lg,
   },
   timerContainer: {
     flex: 1,
