@@ -21,6 +21,7 @@ import { RootStackParamList } from './types/navigation';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import React from 'react';
 import SplashScreen from './screens/SplashScreen';
+import DrawerNavigator from './navigation/DrawerNavigation';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -32,16 +33,16 @@ function AppNavigator() {
     return <SplashScreen onFinish={() => setShowSplash(false)} />;
   }
 
-  if (loading) return null; 
+  if (loading) return null;
 
   return (
     <NavigationContainer>
-      <Stack.Navigator
-        screenOptions={{ headerShown: false }}
-        initialRouteName={user ? 'Home' : 'Landing'}
-      >
-        <Stack.Screen name="Landing" component={LandingScreen} />
-        <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        {!user ? (
+          <Stack.Screen name="Landing" component={LandingScreen} />
+        ) : (
+          <Stack.Screen name="main" component={DrawerNavigator} />
+        )}
       </Stack.Navigator>
     </NavigationContainer>
   );

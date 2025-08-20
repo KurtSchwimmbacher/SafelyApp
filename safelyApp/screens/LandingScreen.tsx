@@ -15,7 +15,6 @@ export default function LandingScreen() {
   const handleLoginSuccess = () => {
     console.log("Login / sign up success");
     setModalType(null);
-    navigation.replace('Home');
   };
 
   return (

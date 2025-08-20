@@ -9,9 +9,6 @@ const HomeScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={styles.inlineHeader}>
-          <SignOutButton />
-        </View>
         <View style={styles.timerContainer}>
           <TimerComponent />
         </View>
@@ -31,12 +28,6 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     alignItems: 'center',
     paddingHorizontal: Spacing.md,
-  },
-  inlineHeader: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    width: '100%',
   },
   timerContainer: {
     flex: 1,
