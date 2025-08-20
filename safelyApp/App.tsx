@@ -26,7 +26,7 @@ import DrawerNavigator from './navigation/DrawerNavigation';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function AppNavigator() {
-  const { user, loading } = useAuth();
+  const { user, loading, isRegistering } = useAuth();
   const [showSplash, setShowSplash] = React.useState(true);
 
   if (showSplash) {
@@ -38,7 +38,7 @@ function AppNavigator() {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {!user ? (
+        {!user || isRegistering ? (
           <Stack.Screen name="Landing" component={LandingScreen} />
         ) : (
           <Stack.Screen name="main" component={DrawerNavigator} />

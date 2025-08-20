@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Modal, View, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView, ScrollView, Platform } from 'react-native';
 import { Colors, GlobalStyles, Radius, Spacing, Typography, Shadows } from '../styles/GlobalStyles';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -7,6 +7,12 @@ import PhoneConfirmationForm from './formComponents/PhoneConfirmationForm';
 import NotificationPermissionForm from './formComponents/NotificationPermissionForm';
 import FeedbackForm from './formComponents/FeedbackForm';
 import FinishSigningUpForm from './formComponents/FinishSigningUpForm';
+import { useAuth } from '../contexts/AuthContext';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../types/navigation';
+
+type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 interface RegisterModalProps {
   visible: boolean;
@@ -16,7 +22,18 @@ interface RegisterModalProps {
 
 export default function RegisterModal({ visible, onClose, onSuccess }: RegisterModalProps) {
   const [step, setStep] = useState<'register' | 'confirm' | 'details' | 'feedback' | 'notifications'>('register');
+  const { setIsRegistering } = useAuth();
+  const navigation = useNavigation<NavigationProp>();
   const canGoBack = step !== 'register';
+
+  useEffect(() => {
+    if (visible) {
+      setIsRegistering(true); // Set flag when modal opens
+    }
+    return () => {
+      setIsRegistering(false); // Clear flag when modal closes
+    };
+  }, [visible, setIsRegistering]);
 
   const handleBack = () => {
     switch (step) {
@@ -33,6 +50,11 @@ export default function RegisterModal({ visible, onClose, onSuccess }: RegisterM
         setStep('feedback');
         break;
     }
+  };
+
+  const handleSuccess = () => {
+    setIsRegistering(false); // Clear flag on success
+    onSuccess();
   };
 
   const stepTitles: Record<typeof step, string> = {
@@ -100,7 +122,7 @@ export default function RegisterModal({ visible, onClose, onSuccess }: RegisterM
                 )}
                 {step === 'notifications' && (
                   <NotificationPermissionForm
-                    onFinish={onSuccess}
+                    onFinish={handleSuccess}
                     onBack={() => setStep('feedback')}
                   />
                 )}
