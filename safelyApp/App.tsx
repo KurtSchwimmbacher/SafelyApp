@@ -21,6 +21,10 @@ import SplashScreen from './screens/SplashScreen';
 import DrawerNavigator from './navigation/DrawerNavigation';
 import { getUserProfile } from './services/userService';
 import OnboardingIntro from './screens/onboarding/OnboardingIntro';
+import OnboardingTimerDemo from './screens/onboarding/OnboardingTimerDemo';
+import OnboardingCheckInDemo from './screens/onboarding/OnboardingCheckDemo';
+
+
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -43,7 +47,11 @@ function AppNavigator() {
         ) : hasOnboarded ? (
           <Stack.Screen name="main" component={DrawerNavigator} />
         ) : (
-          <Stack.Screen name="OnboardingIntro" component={OnboardingIntro} />
+          <>
+            <Stack.Screen name="OnboardingIntro" component={OnboardingIntro} />
+            <Stack.Screen name="OnboardingTimerDemo" component={OnboardingTimerDemo} />
+            <Stack.Screen name ="OnboardingCheckInDemo" component={OnboardingCheckInDemo} />
+          </>
         )}
       </Stack.Navigator>
     </NavigationContainer>

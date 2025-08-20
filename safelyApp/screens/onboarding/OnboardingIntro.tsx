@@ -13,14 +13,14 @@ export default function OnboardingIntro({ navigation }: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const { setHasOnboarded } = useAuth();
 
-  const handleOnboardingComplete = async () => {
+const handleSkip = async () => {
     if (isLoading) return;
     setIsLoading(true);
     try {
       const user = getAuth().currentUser;
       if (user) {
         await updateUserOnboardingStatus(user.uid, true);
-        setHasOnboarded(true); // Update context to trigger navigation
+        setHasOnboarded(true);
       } else {
         throw new Error("No authenticated user found");
       }
@@ -32,6 +32,11 @@ export default function OnboardingIntro({ navigation }: Props) {
     }
   };
 
+
+    const handleStartDemo = () => {
+    navigation.navigate("OnboardingTimerDemo");
+  };
+
   return (
     <View style={[GlobalStyles.container, GlobalStyles.centered]}>
       <Text style={Typography.heading}>Welcome to Safely!</Text>
@@ -41,7 +46,7 @@ export default function OnboardingIntro({ navigation }: Props) {
 
       <TouchableOpacity
         style={[GlobalStyles.fullWidthButton,{marginTop: Spacing.xl}, isLoading && styles.disabledButton]}
-        onPress={handleOnboardingComplete}
+        onPress={handleStartDemo}
         disabled={isLoading}
       >
         <Text style={GlobalStyles.buttonText}>Start Demo</Text>
@@ -49,7 +54,7 @@ export default function OnboardingIntro({ navigation }: Props) {
 
       <TouchableOpacity
         style={[GlobalStyles.outlineButtonFW ,{marginTop: Spacing.md}, isLoading && styles.disabledButton]}
-        onPress={handleOnboardingComplete}
+        onPress={handleSkip}
         disabled={isLoading}
       >
         <Text style={GlobalStyles.outlineButtonText}>Skip</Text>

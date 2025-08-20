@@ -6,4 +6,6 @@ export type RootStackParamList = {
   RegistrationModal: undefined;
   main: undefined;
   OnboardingIntro: undefined;
+  OnboardingTimerDemo: undefined;
+  OnboardingCheckInDemo: undefined;
 };
