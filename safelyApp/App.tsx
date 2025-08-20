@@ -19,13 +19,20 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { RootStackParamList } from './types/navigation';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import React from 'react';
+import SplashScreen from './screens/SplashScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function AppNavigator() {
   const { user, loading } = useAuth();
+  const [showSplash, setShowSplash] = React.useState(true);
 
-  if (loading) return null; // Or show a splash screen
+  if (showSplash) {
+    return <SplashScreen onFinish={() => setShowSplash(false)} />;
+  }
+
+  if (loading) return null; 
 
   return (
     <NavigationContainer>
