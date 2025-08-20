@@ -16,22 +16,18 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { RootStackParamList } from './types/navigation';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import SplashScreen from './screens/SplashScreen';
 import DrawerNavigator from './navigation/DrawerNavigation';
-import { getUserProfile } from './services/userService';
 import OnboardingIntro from './screens/onboarding/OnboardingIntro';
 import OnboardingTimerDemo from './screens/onboarding/OnboardingTimerDemo';
 import OnboardingCheckInDemo from './screens/onboarding/OnboardingCheckDemo';
-
-
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function AppNavigator() {
   const { user, loading, isRegistering, hasOnboarded } = useAuth();
   const [showSplash, setShowSplash] = React.useState(true);
-
 
   if (showSplash) {
     return <SplashScreen onFinish={() => setShowSplash(false)} />;
@@ -50,7 +46,7 @@ function AppNavigator() {
           <>
             <Stack.Screen name="OnboardingIntro" component={OnboardingIntro} />
             <Stack.Screen name="OnboardingTimerDemo" component={OnboardingTimerDemo} />
-            <Stack.Screen name ="OnboardingCheckInDemo" component={OnboardingCheckInDemo} />
+            <Stack.Screen name="OnboardingCheckInDemo" component={OnboardingCheckInDemo} />
           </>
         )}
       </Stack.Navigator>

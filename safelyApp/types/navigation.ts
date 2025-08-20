@@ -8,4 +8,5 @@ export type RootStackParamList = {
   OnboardingIntro: undefined;
   OnboardingTimerDemo: undefined;
   OnboardingCheckInDemo: undefined;
+  dashboard: undefined;
 };

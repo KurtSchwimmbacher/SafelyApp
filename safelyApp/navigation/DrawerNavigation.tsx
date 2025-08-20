@@ -4,9 +4,12 @@ import { useAuth } from "../contexts/AuthContext";
 import HomeScreen from "../screens/HomeScreen";
 import { View, Text, StyleSheet } from "react-native";
 import { logoutUser } from "../services/authService";
+import DashboardScreen from "../screens/dashboardScreen";
+import { Typography } from "../styles/GlobalStyles";
 
 export type DrawerParamList = {
   Home: undefined;
+  Dashboard: undefined; 
   Settings: undefined;
 };
 
@@ -14,24 +17,23 @@ const Drawer = createDrawerNavigator<DrawerParamList>();
 
 // Custom Drawer Content
 function CustomDrawerContent(props: any) {
-
   return (
     <DrawerContentScrollView {...props}>
       <View style={styles.header}>
-        <Text style={styles.title}>My App</Text>
+        <Text style={Typography.heading}>Safely</Text>
       </View>
       <DrawerItem
         label="Home"
         onPress={() => props.navigation.navigate("Home")}
       />
       <DrawerItem
-        label="Settings"
-        onPress={() => props.navigation.navigate("Settings")}
+        label="Stats"
+        onPress={() => props.navigation.navigate("Dashboard")} 
       />
       <DrawerItem
         label="Sign Out"
         onPress={() => {
-            logoutUser();
+          logoutUser();
         }}
       />
     </DrawerContentScrollView>
@@ -43,11 +45,11 @@ export default function DrawerNavigator() {
     <Drawer.Navigator
       drawerContent={(props) => <CustomDrawerContent {...props} />}
       screenOptions={{
-        headerShown: true, // shows top header with hamburger automatically
+        headerShown: true, 
       }}
     >
       <Drawer.Screen name="Home" component={HomeScreen} />
-      {/* Add more screens as your app grows */}
+      <Drawer.Screen name="Dashboard" component={DashboardScreen} /> 
     </Drawer.Navigator>
   );
 }
