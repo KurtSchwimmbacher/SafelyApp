@@ -1,5 +1,3 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet } from 'react-native';
 import {
   useFonts as useInterFonts,
   Inter_400Regular,
@@ -14,20 +12,22 @@ import {
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import LandingScreen from './screens/LandingScreen';
-import HomeScreen from './screens/HomeScreen';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { RootStackParamList } from './types/navigation';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import SplashScreen from './screens/SplashScreen';
 import DrawerNavigator from './navigation/DrawerNavigation';
+import { getUserProfile } from './services/userService';
+import OnboardingIntro from './screens/onboarding/OnboardingIntro';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function AppNavigator() {
-  const { user, loading, isRegistering } = useAuth();
+  const { user, loading, isRegistering, hasOnboarded } = useAuth();
   const [showSplash, setShowSplash] = React.useState(true);
+
 
   if (showSplash) {
     return <SplashScreen onFinish={() => setShowSplash(false)} />;
@@ -40,8 +40,10 @@ function AppNavigator() {
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         {!user || isRegistering ? (
           <Stack.Screen name="Landing" component={LandingScreen} />
-        ) : (
+        ) : hasOnboarded ? (
           <Stack.Screen name="main" component={DrawerNavigator} />
+        ) : (
+          <Stack.Screen name="OnboardingIntro" component={OnboardingIntro} />
         )}
       </Stack.Navigator>
     </NavigationContainer>

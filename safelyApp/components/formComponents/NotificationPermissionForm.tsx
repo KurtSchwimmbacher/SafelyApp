@@ -16,6 +16,7 @@ interface RegisterData {
   contactsShared?: boolean;
   personalizedNotifications?: boolean;
   notificationsEnabled?: boolean;
+  hasOnboarded?: boolean;
 }
 
 const NotificationPermissionForm = ({ onFinish, onBack }: { onFinish: () => void; onBack: () => void }) => {
@@ -54,6 +55,7 @@ const NotificationPermissionForm = ({ onFinish, onBack }: { onFinish: () => void
         notificationsEnabled,
         contactsShared: registerData.contactsShared,
         createdAt: new Date().toISOString(),
+        hasOnboarded: false,
       });
 
       onFinish();

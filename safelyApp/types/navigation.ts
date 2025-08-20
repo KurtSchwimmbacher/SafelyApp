@@ -5,4 +5,5 @@ export type RootStackParamList = {
   Home: undefined;
   RegistrationModal: undefined;
   main: undefined;
+  OnboardingIntro: undefined;
 };

@@ -10,6 +10,7 @@ type RegisterData = {
   notificationsEnabled?: boolean;
   contactsShared: boolean;
   user?: User;
+  hasOnboarded?: boolean;
 };
 
 type RegisterContextType = {
@@ -26,6 +27,7 @@ const defaultValues: RegisterData = {
   personalizedNotifications: true,
   contactsShared: false,
   user: undefined,
+  hasOnboarded: false,
 };
 
 // Create context
