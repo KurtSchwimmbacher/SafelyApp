@@ -80,9 +80,15 @@ const RegisterForm = ({ onContinue }: RegisterFormProps) => {
       )}
 
       <TouchableOpacity
-        style={[GlobalStyles.fullWidthButton, styles.submitButton, Shadows.subtle]}
+        style={[
+          GlobalStyles.fullWidthButton,
+          styles.submitButton,
+          Shadows.subtle,
+          (!email || !password ) && styles.disabledButton, // apply disabled style
+        ]}
         onPress={register}
         activeOpacity={0.7}
+        disabled={!email || !password } // disable until all filled
       >
         <Text style={GlobalStyles.buttonText}>Continue</Text>
       </TouchableOpacity>
@@ -180,5 +186,9 @@ const styles = StyleSheet.create({
     height: 48,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+      disabledButton: {
+    backgroundColor: Colors.lighter,
+    opacity: 0.6,
   },
 });

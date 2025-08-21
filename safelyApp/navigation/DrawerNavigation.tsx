@@ -25,12 +25,12 @@ import {
 export type DrawerParamList = {
   Home: undefined;
   Dashboard: undefined;
-  Settings: undefined; // (placeholder)
+  Settings: undefined; 
 };
 
 const Drawer = createDrawerNavigator<DrawerParamList>();
 
-// ——— Small helper to make drawer items consistent
+// Small helper to make drawer items consistent
 type RowProps = {
   label: string;
   icon: keyof typeof MaterialCommunityIcons.glyphMap;
@@ -72,7 +72,7 @@ const DrawerItemRow: React.FC<RowProps> = ({ label, icon, focused, onPress, test
   </Pressable>
 );
 
-// ——— Custom drawer content
+// Custom drawer content
 function CustomDrawerContent(props: DrawerContentComponentProps) {
   const { navigation, state } = props;
   const { user } = useAuth();

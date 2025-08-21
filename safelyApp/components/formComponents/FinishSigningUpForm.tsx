@@ -78,12 +78,28 @@ const FinishSigningUpForm = ({ onContinue, onBack }: { onContinue: () => void; o
       </Text>
 
       <TouchableOpacity
-        style={[GlobalStyles.fullWidthButton, styles.submitButton, Shadows.subtle, {marginTop: Spacing.xl, marginBottom: Spacing.xl*1.5}]}
+        style={[
+          GlobalStyles.fullWidthButton,
+          styles.submitButton,
+          Shadows.subtle,
+          { marginTop: Spacing.xl, marginBottom: Spacing.xl * 1.5 },
+          (!registerData.firstName ||
+            !registerData.lastName ||
+            !registerData.dateOfBirth ||
+            !registerData.phoneNumber) && styles.disabledButton, // disabled style
+        ]}
         onPress={onContinue}
         activeOpacity={0.7}
+        disabled={
+          !registerData.firstName ||
+          !registerData.lastName ||
+          !registerData.dateOfBirth ||
+          !registerData.phoneNumber
+        } // disable until all filled
       >
         <Text style={GlobalStyles.buttonText}>Agree and Continue</Text>
       </TouchableOpacity>
+
     </View>
   );
 };
@@ -112,5 +128,9 @@ const styles = StyleSheet.create({
   },
   submitButton: {
     marginTop: Spacing.md,
+  },
+  disabledButton: {
+    backgroundColor: Colors.lighter,
+    opacity: 0.6,
   },
 });
