@@ -1,8 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Dimensions, ScrollView } from 'react-native';
 import Animated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import Wave from './Wave';
 import { Colors, Spacing, Typography, GlobalStyles, Shadows, Radius } from '../styles/GlobalStyles';
+import { interpolateColor } from 'react-native-reanimated';
+
 
 interface TimerCountdownProps {
   secondsRemaining: number;
@@ -23,7 +25,7 @@ const TimerCountdown: React.FC<TimerCountdownProps> = ({
   formatTime,
   handleCheckIn,
 }) => {
-  const screenHeight = Dimensions.get('window').height -200;
+  const screenHeight = Dimensions.get('window').height-150;
   const translateY = useSharedValue(0);
 
   useEffect(() => {
@@ -38,8 +40,29 @@ const TimerCountdown: React.FC<TimerCountdownProps> = ({
   }));
 
 
+  const animatedTextStyle = useAnimatedStyle(() => {
+  // Fade to white when waves are still high, to dark when drained
+  const progress = secondsRemaining / initialSeconds;
+
+  return {
+    color: interpolateColor(
+      progress,   // 1 = start (full wave), 0 = empty
+      [0, 1],
+      [Colors.darkest, Colors.lightest] // drained → dark, full waves → white
+    ),
+  };
+});
+
+
+const [isEditVisible, setEditVisible] = useState(false);
+
+
   return (
     <View style={styles.container}>
+
+      {/* edit modal */}
+
+
       {/* Animated waves */}
       <Animated.View style={[styles.waveContainer, animatedStyle]}>
         <Wave 
@@ -71,9 +94,9 @@ const TimerCountdown: React.FC<TimerCountdownProps> = ({
       {/* Content */}
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.contentWrapper}>
-          <Text style={[styles.countdownText, Typography.heading]}>
+          <Animated.Text style={[styles.countdownText, Typography.heading, animatedTextStyle]}>
             {formatTime(secondsRemaining)}
-          </Text>
+          </Animated.Text>
           {nextCheckIn !== null && nextCheckInTime !== null && (
             <View style={styles.nextCheckInContainer}>
               <Text style={[styles.nextCheckInText, Typography.body]}>

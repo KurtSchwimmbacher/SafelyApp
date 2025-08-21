@@ -1,5 +1,5 @@
 import { getAuth } from 'firebase/auth';
-import { collection, addDoc, getFirestore, query, where, getDocs, updateDoc, doc } from 'firebase/firestore';
+import { collection, addDoc, getFirestore, query, where, getDocs, updateDoc, doc, deleteDoc } from 'firebase/firestore';
 
 /**
  * Timer object shape as stored in Firestore.
@@ -172,6 +172,35 @@ export const logCheckInStatus = async (timerId: string, status: 'completed' | 'm
     });
   } catch (error) {
     console.error('Error logging check-in status:', error);
+    throw error;
+  }
+};
+
+
+
+// Update timer fields (duration, name, etc.)
+export const updateTimer = async (
+  timerId: string,
+  updates: Partial<Omit<Timer, 'id' | 'uid' | 'createdAt'>>
+): Promise<void> => {
+  try {
+    const db = getFirestore();
+    const timerRef = doc(db, 'timers', timerId);
+    await updateDoc(timerRef, updates);
+  } catch (error) {
+    console.error('Error updating timer:', error);
+    throw error;
+  }
+};
+
+// Delete timer
+export const deleteTimer = async (timerId: string): Promise<void> => {
+  try {
+    const db = getFirestore();
+    const timerRef = doc(db, 'timers', timerId);
+    await deleteDoc(timerRef);
+  } catch (error) {
+    console.error('Error deleting timer:', error);
     throw error;
   }
 };
