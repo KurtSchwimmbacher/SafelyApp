@@ -7,38 +7,35 @@ import { sendSMS } from '../services/messageService';
  * Interface defining the shape of our timer state and actions.
  */
 export interface TimerState {
-  minutes: number; // Total timer duration in minutes
-  timerName: string; // Optional name for the timer
-  checkIns: string; // Number of check-ins entered as string for form input
-  checkInContact: string; // Contact number for alerts
-  isRunning: boolean; // Whether timer is actively counting down
-  secondsRemaining: number; // Seconds left on the timer
-  checkInIntervals: number[]; // Times (in ms from start) when check-ins should happen
-  nextCheckIn: number | null; // Next check-in time (ms from start)
-  nextCheckInTime: string | null; // Formatted "MM:SS" for next check-in
-  showCheckInButton: boolean; // Whether to display check-in button
-  timerId: string | null; // ID of the active timer in storage
-  startTime: string | null; // ISO string of when timer started
+  minutes: number;
+  timerName: string;
+  checkIns: string;
+  checkInContact: string;
+  isRunning: boolean;
+  secondsRemaining: number;
+  checkInIntervals: number[];
+  nextCheckIn: number | null;
+  nextCheckInTime: string | null;
+  showCheckInButton: boolean;
+  timerId: string | null;
+  startTime: string | null;
   setMinutes: (minutes: number) => void;
   setTimerName: (name: string) => void;
   setCheckIns: (checkIns: string) => void;
   setCheckInContact: (contact: string) => void;
-  handleSaveTimer: () => Promise<void>; // Save/start a timer
-  handleCheckIn: () => void; // Mark a check-in as completed
-  stopTimer: () => void; // Stop and reset the timer
+  handleSaveTimer: () => Promise<void>;
+  handleCheckIn: () => void;
+  stopTimer: (isDeleted?: boolean) => void;
+  refreshTimer: () => Promise<void>;
 }
 
 /**
- * Sends a missed check-in alert to the given contact via WhatsApp (preferred) or SMS.
+ * Sends a missed check-in alert to the given contact via SMS.
  */
 const sendMissedCheckInNotification = async (contact: string, timerName: string) => {
   try {
     const message = `Alert: ${timerName ? `"${timerName}"` : 'Your timer'} missed a check-in!`;
-
-    // Send regular SMS via Twilio
     await sendSMS(contact, message);
-
-
   } catch (error) {
     console.error('Error sending notification:', error);
   }
@@ -77,46 +74,64 @@ export const useTimer = (): TimerState => {
   const [startTime, setStartTime] = useState<string | null>(null);
 
   /**
+   * Loads or refreshes the active timer from storage.
+   */
+  const refreshTimer = async () => {
+    try {
+      const activeTimer = await getActiveTimer();
+      if (activeTimer) {
+        setTimerId(activeTimer.id);
+        setCheckInIntervals(activeTimer.checkInIntervals || []);
+        setMinutes(activeTimer.minutes);
+        setTimerName(activeTimer.timerName || '');
+        setCheckInContact(activeTimer.checkInContact || '');
+        setStartTime(activeTimer.startTime);
+
+        const start = new Date(activeTimer.startTime).getTime();
+        const now = Date.now();
+        const elapsedMs = now - start;
+        const totalSeconds = activeTimer.minutes * 60;
+        const secondsLeft = Math.max(0, totalSeconds - Math.floor(elapsedMs / 1000));
+
+        if (secondsLeft > 0) {
+          setSecondsRemaining(secondsLeft);
+          setIsRunning(true);
+        } else {
+          await markTimerInactive(activeTimer.id).catch((error) => {
+            if (error.code === 'not-found') {
+              console.log('Timer document not found during refresh, likely already deleted');
+            } else {
+              console.error('Failed to mark timer as inactive during refresh:', error);
+            }
+          });
+          setTimerId(null);
+          setStartTime(null);
+          setCheckInIntervals([]);
+          setCheckInContact('');
+          setTimerName('');
+          setSecondsRemaining(0);
+          setIsRunning(false);
+        }
+      } else {
+        // No active timer, reset state
+        setTimerId(null);
+        setStartTime(null);
+        setCheckInIntervals([]);
+        setCheckInContact('');
+        setTimerName('');
+        setSecondsRemaining(0);
+        setIsRunning(false);
+      }
+    } catch (error) {
+      console.error('Error refreshing timer:', error);
+    }
+  };
+
+  /**
    * On mount → load any active timer from storage.
    */
   useEffect(() => {
-    const loadActiveTimer = async () => {
-      try {
-        const activeTimer = await getActiveTimer();
-        if (activeTimer) {
-          // Restore saved timer details
-          setTimerId(activeTimer.id);
-          setCheckInIntervals(activeTimer.checkInIntervals || []);
-          setMinutes(activeTimer.minutes);
-          setTimerName(activeTimer.timerName || '');
-          setCheckInContact(activeTimer.checkInContact || '');
-          setStartTime(activeTimer.startTime);
-
-          // Calculate how much time remains
-          const start = new Date(activeTimer.startTime).getTime();
-          const now = Date.now();
-          const elapsedMs = now - start;
-          const totalSeconds = activeTimer.minutes * 60;
-          const secondsLeft = Math.max(0, totalSeconds - Math.floor(elapsedMs / 1000));
-
-          if (secondsLeft > 0) {
-            setSecondsRemaining(secondsLeft);
-            setIsRunning(true);
-          } else {
-            // Timer already expired → mark inactive and reset state
-            await markTimerInactive(activeTimer.id);
-            setTimerId(null);
-            setStartTime(null);
-            setCheckInIntervals([]);
-            setCheckInContact('');
-            setTimerName('');
-          }
-        }
-      } catch (error) {
-        console.error('Error loading active timer:', error);
-      }
-    };
-    loadActiveTimer();
+    refreshTimer();
   }, []);
 
   /**
@@ -146,7 +161,11 @@ export const useTimer = (): TimerState => {
           setNextCheckInTime(null);
           if (timerId) {
             await markTimerInactive(timerId).catch((error) => {
-              console.error('Failed to mark timer as inactive:', error);
+              if (error.code === 'not-found') {
+                console.log('Timer document not found during countdown, likely already deleted');
+              } else {
+                console.error('Failed to mark timer as inactive:', error);
+              }
             });
           }
           setTimerId(null);
@@ -180,7 +199,11 @@ export const useTimer = (): TimerState => {
         if (showCheckInButton && lastCheckInTime && Date.now() - lastCheckInTime > 30000 && timerId) {
           const checkInTime = new Date().toISOString();
           await logCheckInStatus(timerId, 'missed', checkInTime).catch((error) => {
-            console.error('Failed to log missed check-in:', error);
+            if (error.code === 'not-found') {
+              console.log('Timer document not found during check-in, likely already deleted');
+            } else {
+              console.error('Failed to log missed check-in:', error);
+            }
           });
           if (checkInContact) {
             await sendMissedCheckInNotification(checkInContact, timerName);
@@ -237,11 +260,7 @@ export const useTimer = (): TimerState => {
       setIsRunning(true);
 
       // Reload intervals and contact from saved timer
-      const activeTimer = await getActiveTimer();
-      if (activeTimer) {
-        setCheckInIntervals(activeTimer.checkInIntervals || []);
-        setCheckInContact(activeTimer.checkInContact || '');
-      }
+      await refreshTimer();
     } catch (error: any) {
       Alert.alert('Error', error.message || 'Failed to save timer. Please try again.');
     }
@@ -249,9 +268,10 @@ export const useTimer = (): TimerState => {
 
   /**
    * Stops the timer and resets state.
-   * Marks timer inactive in storage.
+   * Marks timer inactive in storage unless it was just deleted.
+   * @param isDeleted - Indicates if the timer was deleted (skip marking inactive).
    */
-  const stopTimer = () => {
+  const stopTimer = (isDeleted: boolean = false) => {
     setIsRunning(false);
     setSecondsRemaining(0);
     setMinutes(17);
@@ -262,9 +282,13 @@ export const useTimer = (): TimerState => {
     setLastCheckInTime(null);
     setCheckInContact('');
     setTimerName('');
-    if (timerId) {
+    if (timerId && !isDeleted) {
       markTimerInactive(timerId).catch((error) => {
-        console.error('Failed to mark timer as inactive:', error);
+        if (error.code === 'not-found') {
+          console.log('Timer document not found, likely already deleted');
+        } else {
+          console.error('Failed to mark timer as inactive:', error);
+        }
       });
     }
     setTimerId(null);
@@ -278,7 +302,11 @@ export const useTimer = (): TimerState => {
     if (timerId) {
       const checkInTime = new Date().toISOString();
       logCheckInStatus(timerId, 'completed', checkInTime).catch((error) => {
-        console.error('Failed to log check-in:', error);
+        if (error.code === 'not-found') {
+          console.log('Timer document not found during check-in, likely already deleted');
+        } else {
+          console.error('Failed to log check-in:', error);
+        }
       });
     }
     setShowCheckInButton(false);
@@ -305,6 +333,7 @@ export const useTimer = (): TimerState => {
     setCheckInContact,
     handleSaveTimer,
     handleCheckIn,
-    stopTimer
+    stopTimer,
+    refreshTimer,
   };
 };

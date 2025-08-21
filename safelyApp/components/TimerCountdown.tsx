@@ -15,10 +15,13 @@ interface TimerCountdownProps {
   showCheckInButton: boolean;
   formatTime: (seconds: number) => string;
   handleCheckIn: () => void;
+  timerId: string;
   timerName: string;
   currentMinutes: number | undefined;
   checkIns: string;
   checkInContact: string;
+  onTimerUpdated: () => Promise<void>;
+  onTimerDeleted: () => void;
 }
 
 const TimerCountdown: React.FC<TimerCountdownProps> = ({
@@ -29,17 +32,19 @@ const TimerCountdown: React.FC<TimerCountdownProps> = ({
   showCheckInButton,
   formatTime,
   handleCheckIn,
+  timerId,
   timerName,
   currentMinutes,
   checkIns,
   checkInContact,
+  onTimerUpdated,
+  onTimerDeleted,
 }) => {
   const screenHeight = Dimensions.get('window').height - 150;
   const translateY = useSharedValue(0);
 
   useEffect(() => {
     const progress = secondsRemaining / initialSeconds;
-    // Start full (0), end at full screen drain (screenHeight)
     translateY.value = withTiming((1 - progress) * screenHeight, { duration: 1000 });
   }, [secondsRemaining, initialSeconds]);
 
@@ -48,14 +53,12 @@ const TimerCountdown: React.FC<TimerCountdownProps> = ({
   }));
 
   const animatedTextStyle = useAnimatedStyle(() => {
-    // Fade to white when waves are still high, to dark when drained
     const progress = secondsRemaining / initialSeconds;
-
     return {
       color: interpolateColor(
-        progress, // 1 = start (full wave), 0 = empty
+        progress,
         [0, 1],
-        [Colors.darkest, Colors.lightest] // drained → dark, full waves → white
+        [Colors.darkest, Colors.lightest]
       ),
     };
   });
@@ -70,7 +73,6 @@ const TimerCountdown: React.FC<TimerCountdownProps> = ({
       >
         <MaterialCommunityIcons name="pencil" size={24} color={Colors.dark} />
       </TouchableOpacity>
-      {/* Animated waves */}
       <Animated.View style={[styles.waveContainer, animatedStyle]}>
         <Wave
           color={Colors.base}
@@ -98,7 +100,6 @@ const TimerCountdown: React.FC<TimerCountdownProps> = ({
         />
       </Animated.View>
 
-      {/* Content */}
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.contentWrapper}>
           <Animated.Text style={[styles.countdownText, Typography.heading, animatedTextStyle]}>
@@ -126,10 +127,13 @@ const TimerCountdown: React.FC<TimerCountdownProps> = ({
       <EditTimerModal
         visible={isEditVisible}
         onClose={() => setEditVisible(false)}
+        timerId={timerId}
         currentName={timerName || ''}
         currentMinutes={currentMinutes}
         currentCheckIns={parseInt(checkIns) || 0}
         currentContact={checkInContact || ''}
+        onTimerUpdated={onTimerUpdated}
+        onTimerDeleted={onTimerDeleted}
       />
     </View>
   );
