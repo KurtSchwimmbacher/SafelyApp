@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-    disabledButton: {
+  disabledButton: {
     backgroundColor: Colors.lighter,
     opacity: 0.6,
   },

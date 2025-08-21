@@ -6,8 +6,7 @@ import { getAuth } from "firebase/auth";
 import { RootStackParamList } from "../../types/navigation";
 import { useAuth } from "../../contexts/AuthContext";
 import { updateUserOnboardingStatus } from "../../services/userService";
-import { GlobalStyles, Radius, Shadows, Spacing, Typography } from "../../styles/GlobalStyles";
-import { Colors } from "react-native/Libraries/NewAppScreen";
+import { Colors, GlobalStyles, Radius, Shadows, Spacing, Typography } from "../../styles/GlobalStyles"
 import Wave from "../../components/Wave";
 
 
@@ -224,14 +223,14 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.md,
   },
   timerContainer: {
-    width: "100%",
+    width: "110%",
     alignItems: "center",
     position: "relative",
   },
   waveContainer: {
     position: "absolute",
     top: 0,
-    left: -10,
+    left: -8,
     right: 0,
     bottom: 0,
     zIndex: -2,

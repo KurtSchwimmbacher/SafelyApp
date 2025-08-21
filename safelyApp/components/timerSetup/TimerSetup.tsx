@@ -183,9 +183,10 @@ const TimerSetup: React.FC<TimerSetupProps> = ({
         </Modal>
 
         <TouchableOpacity
-          style={[GlobalStyles.fullWidthButton, styles.saveButton, Shadows.subtle]}
+          style={[GlobalStyles.fullWidthButton, styles.saveButton, Shadows.subtle, (!timerName) && styles.disabledButton, ]}
           onPress={handleSaveTimer}
           activeOpacity={0.7}
+          disabled={!timerName} 
         >
           <Text style={GlobalStyles.buttonText}>Save Timer</Text>
         </TouchableOpacity>
@@ -256,5 +257,9 @@ const styles = StyleSheet.create({
   modalCancelButton: {
     marginTop: Spacing.md,
     width: '100%'
+  },
+  disabledButton: {
+    backgroundColor: Colors.lighter,
+    opacity: 0.6,
   },
 });
