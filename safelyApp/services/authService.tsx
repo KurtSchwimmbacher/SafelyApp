@@ -1,5 +1,5 @@
 // services/authService.ts
-import { createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut} from "firebase/auth";
+import { createUserWithEmailAndPassword,deleteUser,signInWithEmailAndPassword,signOut} from "firebase/auth";
 import { auth } from "../firebase";
 
 export const loginUser = async (email: string, password: string) => {
@@ -19,4 +19,11 @@ export const registerUser = async (email: string, password: string) => {
 export const getUserInfo = () => {
   const user = auth.currentUser;
   return user ?? null;
+};
+
+export const deleteCurrentUser = async () => {
+  const currentUser = auth.currentUser;
+  if (currentUser) {
+    await deleteUser(currentUser);
+  }
 };

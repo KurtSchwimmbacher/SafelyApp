@@ -21,11 +21,12 @@ import {
   Radius,
   Shadows,
 } from '../styles/GlobalStyles';
+import ProfileScreen from '../screens/ProfileScreen';
 
 export type DrawerParamList = {
   Home: undefined;
   Dashboard: undefined;
-  Settings: undefined; 
+  Profile: undefined; // Renamed from Settings for this feature
 };
 
 const Drawer = createDrawerNavigator<DrawerParamList>();
@@ -108,14 +109,18 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
         <View style={styles.avatar}>
           <Text style={styles.avatarText}>{initials}</Text>
         </View>
-        <View style={{ flex: 1 }}>
+        <Pressable // Make this pressable to navigate to Profile
+          onPress={() => navigation.navigate('Profile')}
+          style={{ flex: 1 }}
+          android_ripple={{ color: 'rgba(0,160,160,0.15)' }}
+        >
           <Text style={[Typography.heading, styles.brand]}>Safely</Text>
           <Text style={[Typography.caption, styles.subtleText]}>
             {profile?.firstName
               ? `Welcome, ${profile.firstName}`
               : user?.email || 'Stay safe out there'}
           </Text>
-        </View>
+        </Pressable>
       </View>
 
       {/* Nav items */}
@@ -134,13 +139,6 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
           onPress={() => navigation.navigate('Dashboard')}
           testID="nav-stats"
         />
-        {/* Example placeholder:
-        <DrawerItemRow
-          label="Settings"
-          icon="cog"
-          focused={isFocused('Settings')}
-          onPress={() => navigation.navigate('Settings')}
-        /> */}
       </View>
 
       {/* Footer actions */}
@@ -201,6 +199,11 @@ export default function DrawerNavigator() {
         name="Dashboard"
         component={DashboardScreen}
         options={{ headerTitle: 'Stats' }}
+      />
+      <Drawer.Screen // Add this screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{ headerTitle: 'Profile' }}
       />
     </Drawer.Navigator>
   );

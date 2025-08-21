@@ -33,3 +33,15 @@ export const getUserProfile = async (uid: string): Promise<userProfile | null> =
     }
     return null;
 }
+
+export const updateUserProfile = async (uid: string, updates: Partial<userProfile>) => {
+  const userRef = doc(db, "users", uid);
+  await updateDoc(userRef, updates);
+};
+
+import { deleteDoc } from 'firebase/firestore';
+
+export const deleteUserProfile = async (uid: string) => {
+  const userRef = doc(db, "users", uid);
+  await deleteDoc(userRef);
+};
