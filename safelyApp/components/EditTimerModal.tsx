@@ -1,15 +1,12 @@
 import React, { useState } from 'react';
-import { Modal, View, Text, TouchableOpacity, TextInput, StyleSheet, Alert } from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { updateTimer, deleteTimer } from '../services/timersService';
-import { Colors, Spacing, Typography, GlobalStyles, Shadows, Radius } from '../styles/GlobalStyles';
+import { Modal, View, Text, TouchableOpacity, TextInput, StyleSheet } from 'react-native';
+import { Colors, Spacing, Typography, Radius, GlobalStyles } from '../styles/GlobalStyles';
 
 interface EditTimerModalProps {
   visible: boolean;
   onClose: () => void;
-  timerId: string;
   currentName: string;
-  currentMinutes: number;
+  currentMinutes: number | undefined;
   currentCheckIns: number;
   currentContact: string;
 }
@@ -17,41 +14,15 @@ interface EditTimerModalProps {
 const EditTimerModal: React.FC<EditTimerModalProps> = ({
   visible,
   onClose,
-  timerId,
   currentName,
   currentMinutes,
   currentCheckIns,
-  currentContact
+  currentContact,
 }) => {
-  const [name, setName] = useState(currentName);
-  const [minutes, setMinutes] = useState(currentMinutes);
-  const [checkIns, setCheckIns] = useState(currentCheckIns.toString());
-  const [contact, setContact] = useState(currentContact);
-
-  const handleSave = async () => {
-    try {
-      await updateTimer(timerId, {
-        timerName: name,
-        minutes,
-        checkIns: parseInt(checkIns),
-        checkInContact: contact,
-      });
-      Alert.alert('Success', 'Timer updated!');
-      onClose();
-    } catch (err) {
-      Alert.alert('Error', 'Failed to update timer.');
-    }
-  };
-
-  const handleDelete = async () => {
-    try {
-      await deleteTimer(timerId);
-      Alert.alert('Deleted', 'Timer removed.');
-      onClose();
-    } catch (err) {
-      Alert.alert('Error', 'Failed to delete timer.');
-    }
-  };
+  const [name, setName] = useState(currentName || '');
+  const [minutes, setMinutes] = useState(currentMinutes ? currentMinutes.toString() : '17');
+  const [checkIns, setCheckIns] = useState(currentCheckIns ? currentCheckIns.toString() : '0');
+  const [contact, setContact] = useState(currentContact || '');
 
   return (
     <Modal visible={visible} animationType="slide" onRequestClose={onClose}>
@@ -66,10 +37,10 @@ const EditTimerModal: React.FC<EditTimerModalProps> = ({
         />
         <TextInput
           style={styles.input}
-          value={minutes.toString() || ""}
+          value={minutes}
           keyboardType="numeric"
           placeholder="Minutes"
-          onChangeText={(val) => setMinutes(Number(val))}
+          onChangeText={setMinutes}
         />
         <TextInput
           style={styles.input}
@@ -85,11 +56,11 @@ const EditTimerModal: React.FC<EditTimerModalProps> = ({
           onChangeText={setContact}
         />
 
-        <TouchableOpacity style={[GlobalStyles.fullWidthButton, Shadows.subtle]} onPress={handleSave}>
-          <Text style={GlobalStyles.buttonText}>Save Changes</Text>
+        <TouchableOpacity style={[GlobalStyles.fullWidthButton, styles.updateButton]}>
+          <Text style={GlobalStyles.buttonText}>Update Timer</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={[GlobalStyles.fullWidthButton, styles.deleteButton]} onPress={handleDelete}>
+        <TouchableOpacity style={[GlobalStyles.fullWidthButton, styles.deleteButton]}>
           <Text style={GlobalStyles.buttonText}>Delete Timer</Text>
         </TouchableOpacity>
 
@@ -120,8 +91,20 @@ const styles = StyleSheet.create({
     borderRadius: Radius.sm,
     marginBottom: Spacing.md,
   },
+  updateButton: {
+    backgroundColor: Colors.base,
+    marginTop: Spacing.md,
+    paddingVertical: Spacing.md,
+    borderRadius: Radius.md,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   deleteButton: {
     backgroundColor: '#FF0000',
     marginTop: Spacing.md,
+    paddingVertical: Spacing.md,
+    borderRadius: Radius.md,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

@@ -4,7 +4,8 @@ import Animated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-na
 import Wave from './Wave';
 import { Colors, Spacing, Typography, GlobalStyles, Shadows, Radius } from '../styles/GlobalStyles';
 import { interpolateColor } from 'react-native-reanimated';
-
+import EditTimerModal from './EditTimerModal';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 interface TimerCountdownProps {
   secondsRemaining: number;
@@ -14,6 +15,10 @@ interface TimerCountdownProps {
   showCheckInButton: boolean;
   formatTime: (seconds: number) => string;
   handleCheckIn: () => void;
+  timerName: string;
+  currentMinutes: number | undefined;
+  checkIns: string;
+  checkInContact: string;
 }
 
 const TimerCountdown: React.FC<TimerCountdownProps> = ({
@@ -24,70 +29,72 @@ const TimerCountdown: React.FC<TimerCountdownProps> = ({
   showCheckInButton,
   formatTime,
   handleCheckIn,
+  timerName,
+  currentMinutes,
+  checkIns,
+  checkInContact,
 }) => {
-  const screenHeight = Dimensions.get('window').height-150;
+  const screenHeight = Dimensions.get('window').height - 150;
   const translateY = useSharedValue(0);
 
   useEffect(() => {
     const progress = secondsRemaining / initialSeconds;
     // Start full (0), end at full screen drain (screenHeight)
     translateY.value = withTiming((1 - progress) * screenHeight, { duration: 1000 });
-}, [secondsRemaining, initialSeconds]);
-
+  }, [secondsRemaining, initialSeconds]);
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: translateY.value }],
   }));
 
-
   const animatedTextStyle = useAnimatedStyle(() => {
-  // Fade to white when waves are still high, to dark when drained
-  const progress = secondsRemaining / initialSeconds;
+    // Fade to white when waves are still high, to dark when drained
+    const progress = secondsRemaining / initialSeconds;
 
-  return {
-    color: interpolateColor(
-      progress,   // 1 = start (full wave), 0 = empty
-      [0, 1],
-      [Colors.darkest, Colors.lightest] // drained → dark, full waves → white
-    ),
-  };
-});
+    return {
+      color: interpolateColor(
+        progress, // 1 = start (full wave), 0 = empty
+        [0, 1],
+        [Colors.darkest, Colors.lightest] // drained → dark, full waves → white
+      ),
+    };
+  });
 
-
-const [isEditVisible, setEditVisible] = useState(false);
-
+  const [isEditVisible, setEditVisible] = useState(false);
 
   return (
     <View style={styles.container}>
-
-      {/* edit modal */}
-
-
+      <TouchableOpacity
+        style={[styles.editButton, { justifyContent: 'flex-end' }]}
+        onPress={() => setEditVisible(true)}
+      >
+        <MaterialCommunityIcons name="pencil" size={24} color={Colors.dark} />
+      </TouchableOpacity>
       {/* Animated waves */}
       <Animated.View style={[styles.waveContainer, animatedStyle]}>
-        <Wave 
-          color={Colors.base} 
-          amplitude={25} 
-          verticalOffset={screenHeight * 0.048} 
-          opacity={1} 
-          speed={4000} 
-          fullHeight={screenHeight} 
+        <Wave
+          color={Colors.base}
+          amplitude={25}
+          verticalOffset={screenHeight * 0.048}
+          opacity={1}
+          speed={4000}
+          fullHeight={screenHeight}
         />
-        <Wave 
-          color={Colors.base} 
-          amplitude={30} 
-          verticalOffset={screenHeight * 0.049}  // Closer for more overlap
-          opacity={0.7} 
-          speed={5000} 
-          fullHeight={screenHeight} 
+        <Wave
+          color={Colors.base}
+          amplitude={30}
+          verticalOffset={screenHeight * 0.049}
+          opacity={0.7}
+          speed={5000}
+          fullHeight={screenHeight}
         />
-        <Wave 
-          color={Colors.base} 
-          amplitude={35} 
-          verticalOffset={screenHeight * 0.05}  // Closer for more overlap
-          opacity={0.5} 
-          speed={6000} 
-          fullHeight={screenHeight} 
+        <Wave
+          color={Colors.base}
+          amplitude={35}
+          verticalOffset={screenHeight * 0.05}
+          opacity={0.5}
+          speed={6000}
+          fullHeight={screenHeight}
         />
       </Animated.View>
 
@@ -115,6 +122,15 @@ const [isEditVisible, setEditVisible] = useState(false);
           )}
         </View>
       </ScrollView>
+
+      <EditTimerModal
+        visible={isEditVisible}
+        onClose={() => setEditVisible(false)}
+        currentName={timerName || ''}
+        currentMinutes={currentMinutes}
+        currentCheckIns={parseInt(checkIns) || 0}
+        currentContact={checkInContact || ''}
+      />
     </View>
   );
 };
@@ -128,7 +144,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'transparent',
-    padding: 0,  
+    padding: 0,
   },
   waveContainer: {
     position: 'absolute',
@@ -155,7 +171,7 @@ const styles = StyleSheet.create({
     color: Colors.darker,
     marginBottom: Spacing.sm,
     textAlign: 'center',
-    width: '100%'
+    width: '100%',
   },
   nextCheckInContainer: {
     width: '100%',
@@ -174,5 +190,11 @@ const styles = StyleSheet.create({
     borderRadius: Radius.md,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  editButton: {
+    zIndex: 1,
+    backgroundColor: Colors.lighter,
+    padding: Spacing.md,
+    borderRadius: Radius.full,
   },
 });

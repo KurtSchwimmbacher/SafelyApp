@@ -42,6 +42,10 @@ const TimerComponent: React.FC = () => {
           showCheckInButton={showCheckInButton}
           formatTime={formatTime}
           handleCheckIn={handleCheckIn}
+          timerName={timerName}
+          currentMinutes={minutes}
+          checkIns={checkIns}
+          checkInContact={checkInContact}
         />
       ) : (
         <TimerSetup
