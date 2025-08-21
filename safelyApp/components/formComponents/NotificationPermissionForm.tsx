@@ -2,22 +2,11 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { Colors, Spacing, Typography, GlobalStyles, Shadows } from '../../styles/GlobalStyles';
 import { Switch } from 'react-native-gesture-handler';
-import { getAuth } from 'firebase/auth';
 import { createUserProfile } from '../../services/userService';
 import { useRegisterContext } from '../../contexts/RegisterContext';
 import * as Notifications from 'expo-notifications';
+import { styles } from '../../styles/formStyles/NotificationPermissionForm.style';
 
-interface RegisterData {
-  user?: { uid: string; email?: string | null };
-  firstName?: string;
-  lastName?: string;
-  dateOfBirth?: string;
-  phoneNumber?: string;
-  contactsShared?: boolean;
-  personalizedNotifications?: boolean;
-  notificationsEnabled?: boolean;
-  hasOnboarded?: boolean;
-}
 
 const NotificationPermissionForm = ({ onFinish, onBack }: { onFinish: () => void; onBack: () => void }) => {
   const { registerData, setRegisterData } = useRegisterContext();
@@ -104,22 +93,3 @@ const NotificationPermissionForm = ({ onFinish, onBack }: { onFinish: () => void
 
 export default NotificationPermissionForm;
 
-const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    alignItems: 'center',
-    paddingHorizontal: Spacing.lg,
-  },
-  switchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: Colors.white,
-    borderRadius: Spacing.sm,
-    padding: Spacing.md,
-    marginVertical: Spacing.md,
-    justifyContent: 'space-between',
-  },
-  submitButton: {
-    marginTop: Spacing.md,
-  },
-});

@@ -4,17 +4,9 @@ import { Colors, Spacing, Typography, GlobalStyles, Shadows } from '../../styles
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRegisterContext } from '../../contexts/RegisterContext';
 import * as Contacts from 'expo-contacts';
+import { styles } from '../../styles/formStyles/FeedbackForm.styles';
 
-interface RegisterData {
-  user?: { uid: string; email?: string | null };
-  firstName?: string;
-  lastName?: string;
-  dateOfBirth?: string;
-  phoneNumber?: string;
-  contactsShared?: boolean;
-  personalizedNotifications?: boolean;
-  notificationsEnabled?: boolean;
-}
+
 
 const FeedbackForm = ({ onContinue, onBack }: { onContinue: () => void; onBack: () => void }) => {
   const { registerData, setRegisterData } = useRegisterContext();
@@ -88,19 +80,3 @@ const FeedbackForm = ({ onContinue, onBack }: { onContinue: () => void; onBack: 
 
 export default FeedbackForm;
 
-const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    alignItems: 'center',
-    paddingHorizontal: Spacing.lg,
-  },
-  submitButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: Spacing.md,
-  },
-  buttonIcon: {
-    marginRight: Spacing.sm,
-  },
-});

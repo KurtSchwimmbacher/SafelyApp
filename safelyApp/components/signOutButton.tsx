@@ -1,14 +1,11 @@
 import React from 'react';
-import { TouchableOpacity, StyleSheet } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { Colors, Spacing } from '../styles/GlobalStyles';
+import { Colors } from '../styles/GlobalStyles';
 import { logoutUser } from '../services/authService';
 import { useNavigation } from '@react-navigation/native';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../types/navigation';
-
-// Define navigation prop type
-type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
+import { styles } from '../styles/componentStyles/signOutButton.styles';
+import { NavigationProp } from '../types/componentTypes/RegisterModal.types';
 
 const SignOutButton = () => {
   const navigation = useNavigation<NavigationProp>();
@@ -34,15 +31,3 @@ const SignOutButton = () => {
 
 export default SignOutButton;
 
-const styles = StyleSheet.create({
-  signOutButton: {
-    backgroundColor: Colors.lightest,
-    padding: Spacing.xs,
-    borderRadius: 50,
-    marginTop: Spacing.md,
-    width: 48,
-    height: 48,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

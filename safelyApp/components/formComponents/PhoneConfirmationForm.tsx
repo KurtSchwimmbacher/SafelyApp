@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Keyboard, Pressable } from "react-native";
-import { Colors, GlobalStyles, Spacing, Typography, Radius, Shadows } from "../../styles/GlobalStyles";
+import { View, Text, TextInput, TouchableOpacity, Keyboard, Pressable } from "react-native";
+import { Colors, GlobalStyles, Spacing, Typography, Shadows } from "../../styles/GlobalStyles";
+import { styles } from "../../styles/formStyles/PhoneConfirmationForm.styles";
 
 const OTP_LENGTH = 6;
 
@@ -92,38 +93,3 @@ const PhoneConfirmationForm = ({ onContinue, onBack }: { onContinue: () => void;
 
 export default PhoneConfirmationForm;
 
-const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    alignItems: 'center',
-    paddingHorizontal: Spacing.lg,
-  },
-  otpContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginVertical: Spacing.md,
-    width: '100%',
-  },
-  otpInput: {
-    width: 44,
-    height: 44,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.lighter,
-    borderRadius: Radius.sm,
-    color: Colors.darker,
-    marginHorizontal: Spacing.xs,
-    backgroundColor: Colors.white,
-    lineHeight: 24,
-    textAlignVertical: 'center',
-  },
-  disabledButton: {
-    backgroundColor: Colors.lighter,
-    opacity: 0.6,
-  },
-  link: {
-    marginTop: Spacing.sm,
-  },
-  submitButton: {
-    marginTop: Spacing.xl,
-  },
-});

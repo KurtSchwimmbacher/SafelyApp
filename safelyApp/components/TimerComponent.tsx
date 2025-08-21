@@ -1,10 +1,9 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { Colors, Spacing } from '../styles/GlobalStyles';
 import TimerSetup from './timerSetup/TimerSetup';
 import TimerCountdown from './TimerCountdown';
 import { useTimer } from '../hooks/useTimer';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { styles } from '../styles/componentStyles/TimerComponent.styles';
 
 const formatTime = (seconds: number) => {
   const mins = Math.floor(seconds / 60);
@@ -72,11 +71,3 @@ const TimerComponent: React.FC = () => {
 
 export default TimerComponent;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'transparent',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-  },
-});

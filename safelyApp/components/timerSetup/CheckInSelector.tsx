@@ -1,12 +1,11 @@
 import React from 'react';
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { Colors, Spacing, Radius, Shadows } from '../../styles/GlobalStyles';
+import { styles } from '../../styles/timerSetupStyles/CheckInSelector.styles';
+import { Colors, Shadows } from '../../styles/GlobalStyles';
+import { CheckInSelectorProps } from '../../types/timerSetupTypes/CheckInSelector.types';
 
-interface CheckInSelectorProps {
-  checkIns: number;
-  setCheckIns: (num: number) => void;
-}
+
 
 const CheckInSelector: React.FC<CheckInSelectorProps> = ({ checkIns, setCheckIns }) => {
   const maxCheckIns = 5;
@@ -40,22 +39,3 @@ const CheckInSelector: React.FC<CheckInSelectorProps> = ({ checkIns, setCheckIns
 
 export default CheckInSelector;
 
-const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    marginBottom: Spacing.sm,
-    alignItems: 'center',
-  },
-  iconsContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.sm,
-  },
-  iconWrapper: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: Radius.full,
-    backgroundColor: Colors.white,
-    padding: Spacing.xs,
-  },
-});

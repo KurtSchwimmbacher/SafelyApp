@@ -2,13 +2,8 @@ import React from 'react';
 import { View, TextInput, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Colors, Spacing, Typography, GlobalStyles, Shadows } from '../../styles/GlobalStyles';
 import { useRegisterContext } from '../../contexts/RegisterContext';
+import { styles } from '../../styles/formStyles/FinishSigningUpForm.styles';
 
-interface RegisterData {
-  firstName?: string;
-  lastName?: string;
-  dateOfBirth?: string;
-  phoneNumber?: string;
-}
 
 const FinishSigningUpForm = ({ onContinue, onBack }: { onContinue: () => void; onBack: () => void }) => {
   const { registerData, setRegisterData } = useRegisterContext();
@@ -106,31 +101,3 @@ const FinishSigningUpForm = ({ onContinue, onBack }: { onContinue: () => void; o
 
 export default FinishSigningUpForm;
 
-const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    alignItems: 'center',
-    paddingHorizontal: Spacing.lg,
-  },
-  nameContainer: {
-    width: '100%',
-    marginBottom: Spacing.lg,
-  },
-  input: {
-    width: '100%',
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.lighter,
-    paddingVertical: Spacing.md,
-    paddingHorizontal: Spacing.md,
-    marginBottom: Spacing.lg,
-    color: Colors.darker,
-    height: 56
-  },
-  submitButton: {
-    marginTop: Spacing.md,
-  },
-  disabledButton: {
-    backgroundColor: Colors.lighter,
-    opacity: 0.6,
-  },
-});

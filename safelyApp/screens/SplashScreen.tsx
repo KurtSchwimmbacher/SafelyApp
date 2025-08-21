@@ -8,6 +8,7 @@ import Animated, {
   runOnJS,
 } from "react-native-reanimated";
 import Wave from "../components/Wave";
+import { styles } from "../styles/screenStyles/SplashScreen.styles";
 
 
 const { width, height } = Dimensions.get("window");
@@ -69,19 +70,3 @@ export default function SplashScreen({ onFinish }: SplashScreenProps) {
     </Animated.View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    width,
-    height,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#fff", 
-  },
-  text: {
-    fontFamily: "SpaceGrotesk_700Bold",
-    fontSize: 42,
-    color: "#00A0A0",
-  },
-});

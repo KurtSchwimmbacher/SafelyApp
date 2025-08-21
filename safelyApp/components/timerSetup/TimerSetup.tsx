@@ -6,18 +6,10 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Colors, Spacing, Typography, GlobalStyles, Shadows, Radius } from '../../styles/GlobalStyles';
 import CheckInSelector from './CheckInSelector';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { TimerSetupProps } from '../../types/timerSetupTypes/TimerSetup.types';
+import { styles } from '../../styles/timerSetupStyles/TimerSetup.styles';
 
-interface TimerSetupProps {
-  minutes: number;
-  timerName: string;
-  checkIns: string;
-  checkInContact: string;
-  setMinutes: (minutes: number) => void;
-  setTimerName: (name: string) => void;
-  setCheckIns: (checkIns: string) => void;
-  setCheckInContact: (contact: string) => void;
-  handleSaveTimer: () => Promise<void>;
-}
+
 
 const TimerSetup: React.FC<TimerSetupProps> = ({
   minutes,
@@ -196,70 +188,3 @@ const TimerSetup: React.FC<TimerSetupProps> = ({
 
 export default TimerSetup;
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: Colors.white,
-    padding: Spacing.md,
-    justifyContent: 'flex-start',
-  },
-  input: {
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.lighter,
-    paddingVertical: Spacing.md,
-    marginBottom: Spacing.lg,  
-    color: Colors.darker,
-    height: 52,
-    textAlignVertical: 'center',
-  },
-  circleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: Spacing.lg, 
-  },
-  circleButton: {
-    backgroundColor: Colors.base,
-    width: 48,
-    height: 48,
-    borderRadius: Radius.full,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginHorizontal: Spacing.md,
-  },
-  contactButton: {
-    width: '100%',
-    paddingVertical: Spacing.lg,
-    backgroundColor: Colors.white,
-    borderRadius: Radius.md,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  saveButton: {
-    width: '100%',
-    marginTop: Spacing.sm,
-    paddingVertical: Spacing.lg
-  },
-  modalContainer: {
-    flex: 1,
-    backgroundColor: Colors.white,
-    padding: Spacing.md,
-  },
-  modalHeading: {
-    color: Colors.darker,
-    textAlign: 'center',
-    marginBottom: Spacing.md,
-  },
-  contactItem: {
-    paddingVertical: Spacing.sm,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.lighter,
-  },
-  modalCancelButton: {
-    marginTop: Spacing.md,
-    width: '100%'
-  },
-  disabledButton: {
-    backgroundColor: Colors.lighter,
-    opacity: 0.6,
-  },
-});

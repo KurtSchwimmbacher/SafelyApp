@@ -1,8 +1,7 @@
 import React from 'react';
-import { View, Text, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
-import { Colors, Spacing, Typography } from '../styles/GlobalStyles';
+import { View, SafeAreaView, ScrollView } from 'react-native';
 import TimerComponent from '../components/TimerComponent';
-import SignOutButton from '../components/signOutButton';
+import { styles } from '../styles/screenStyles/HomeScreen.styles';
 
 
 const HomeScreen = () => {
@@ -18,19 +17,3 @@ const HomeScreen = () => {
 };
 
 export default HomeScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.white,
-  },
-  scrollContent: {
-    flexGrow: 1,
-    alignItems: 'center',
-    paddingHorizontal: Spacing.md,
-  },
-  timerContainer: {
-    flex: 1,
-    width: '100%',
-  },
-});

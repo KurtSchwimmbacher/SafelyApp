@@ -9,16 +9,10 @@ import FeedbackForm from './formComponents/FeedbackForm';
 import FinishSigningUpForm from './formComponents/FinishSigningUpForm';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../types/navigation';
+import { styles } from '../styles/componentStyles/RegisterModal.styles';
+import { NavigationProp, RegisterModalProps } from '../types/componentTypes/RegisterModal.types';
 
-type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
-interface RegisterModalProps {
-  visible: boolean;
-  onClose: () => void;
-  onSuccess: () => void;
-}
 
 export default function RegisterModal({ visible, onClose, onSuccess }: RegisterModalProps) {
   const [step, setStep] = useState<'register' | 'confirm' | 'details' | 'feedback' | 'notifications'>('register');
@@ -134,50 +128,3 @@ export default function RegisterModal({ visible, onClose, onSuccess }: RegisterM
     </Modal>
   );
 }
-
-const styles = StyleSheet.create({
-  overlay: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    backgroundColor: 'rgba(0, 0, 0, 0.4)',
-  },
-  keyboardAvoidingContainer: {
-    flex: 1,
-    justifyContent: 'flex-end',
-  },
-  scrollContent: {
-    flexGrow: 1,
-    justifyContent: 'flex-end',
-  },
-  content: {
-    backgroundColor: Colors.white,
-    borderTopLeftRadius: Radius.xl,
-    borderTopRightRadius: Radius.xl,
-    minHeight: 500,
-  },
-  shortContent: {
-    minHeight: 350,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.lighter,
-  },
-  headerTitle: {
-    flex: 1,
-    textAlign: 'center',
-  },
-  closeButton: {
-    padding: Spacing.sm,
-  },
-  backButton: {
-    padding: Spacing.sm,
-  },
-  sideSpacer: {
-    width: 32,
-  },
-});
