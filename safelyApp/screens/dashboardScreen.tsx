@@ -1,8 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
-import { Colors, Spacing } from '../styles/GlobalStyles';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  ActivityIndicator,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { getDashboardSummary, DashboardSummary } from '../services/dashboardService';
+import {
+  getDashboardSummary,
+  DashboardSummary,
+} from '../services/dashboardService';
+import {
+  Colors,
+  Spacing,
+  Radius,
+  Shadows,
+  Typography,
+} from '../styles/GlobalStyles';
 
 const DashboardScreen: React.FC = () => {
   const [summary, setSummary] = useState<DashboardSummary | null>(null);
@@ -28,7 +43,7 @@ const DashboardScreen: React.FC = () => {
 
   if (loading) {
     return (
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={styles.centeredContainer}>
         <ActivityIndicator size="large" color={Colors.base} />
       </SafeAreaView>
     );
@@ -36,7 +51,7 @@ const DashboardScreen: React.FC = () => {
 
   if (error) {
     return (
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={styles.centeredContainer}>
         <Text style={styles.errorText}>{error}</Text>
       </SafeAreaView>
     );
@@ -44,13 +59,14 @@ const DashboardScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      
-      <View style={styles.summarySection}>
+      {/* Total Hours Card */}
+      <View style={[styles.card, Shadows.subtle]}>
         <Text style={styles.sectionTitle}>Total Hours Logged</Text>
-        <Text style={styles.sectionValue}>{summary?.totalHours} hours</Text>
+        <Text style={styles.sectionValue}>{summary?.totalHours} hrs</Text>
       </View>
 
-      <View style={styles.summarySection}>
+      {/* Timer Names Card */}
+      <View style={[styles.card, Shadows.subtle]}>
         <Text style={styles.sectionTitle}>Most Used Timer Names</Text>
         {summary?.timerNameCounts.length ? (
           <FlatList
@@ -59,10 +75,12 @@ const DashboardScreen: React.FC = () => {
             renderItem={({ item }) => (
               <View style={styles.timerNameItem}>
                 <Text style={styles.timerNameText}>{item.name}</Text>
-                <Text style={styles.timerCountText}>{item.count} times</Text>
+                <Text style={styles.timerCountText}>{item.count}×</Text>
               </View>
             )}
-            ListEmptyComponent={<Text style={styles.emptyText}>No timers found.</Text>}
+            ListEmptyComponent={
+              <Text style={styles.emptyText}>No timers found.</Text>
+            }
           />
         ) : (
           <Text style={styles.emptyText}>No timer names recorded.</Text>
@@ -77,29 +95,31 @@ export default DashboardScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.lightest,
     padding: Spacing.md,
+    gap: Spacing.md,
   },
-  header: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: Colors.dark,
-    marginBottom: Spacing.lg,
-    textAlign: 'center',
+  centeredContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: Colors.white,
   },
-  summarySection: {
-    marginBottom: Spacing.lg,
+  card: {
+    backgroundColor: Colors.white,
+    borderRadius: Radius.lg,
+    padding: Spacing.lg,
+    marginBottom: Spacing.sm,
   },
   sectionTitle: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: Colors.lighter,
+    ...Typography.subheading,
+    color: Colors.dark,
     marginBottom: Spacing.sm,
   },
   sectionValue: {
-    fontSize: 24,
-    fontWeight: 'bold',
+    ...Typography.heading,
     color: Colors.base,
+    fontWeight: '700',
   },
   timerNameItem: {
     flexDirection: 'row',
@@ -107,28 +127,27 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.sm,
     paddingHorizontal: Spacing.md,
     backgroundColor: Colors.lightest,
-    borderRadius: Spacing.sm,
+    borderRadius: Radius.md,
     marginBottom: Spacing.xs,
   },
   timerNameText: {
-    fontSize: 16,
-    color: Colors.base,
+    ...Typography.body,
+    color: Colors.darker,
   },
   timerCountText: {
-    fontSize: 16,
+    ...Typography.subheading,
     color: Colors.base,
-    fontWeight: '500',
   },
   emptyText: {
-    fontSize: 16,
-    color: Colors.darker,
-    textAlign: 'center',
-    marginTop: Spacing.sm,
-  },
-  errorText: {
-    fontSize: 16,
-    color: Colors.darkest,
+    ...Typography.body,
+    color: Colors.dark,
     textAlign: 'center',
     marginTop: Spacing.md,
+  },
+  errorText: {
+    ...Typography.body,
+    color: Colors.darkest,
+    textAlign: 'center',
+    marginHorizontal: Spacing.lg,
   },
 });
