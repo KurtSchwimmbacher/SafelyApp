@@ -142,6 +142,10 @@ Once a timer is active, the countdown screen displays the remaining time with an
 
 ### UI Designs
 
+<img width="4500" height="3000" alt="EditTimerMockup" src="https://github.com/user-attachments/assets/8f19137d-8eb0-4d93-bc2e-f9c6880b9c7f" />
+<img width="4500" height="3000" alt="TimerScreenMockup" src="https://github.com/user-attachments/assets/9c466d5b-0530-4b31-8edb-13c6eaed6c07" />
+<img width="4500" height="3000" alt="CreateTimerMockup" src="https://github.com/user-attachments/assets/c596053e-1538-4d6d-8905-a3f18989f499" />
+
 --- 
 
 ## Unit Testing & User Testing 
