@@ -75,7 +75,7 @@ Safely is a React Native app designed to help users feel safer when traveling al
 
 ## Getting Started
 
-# 2.1 Prerequisites Ensure you have the following installed before running the app: 
+### 2.1 Prerequisites Ensure you have the following installed before running the app: 
 
 * ![Node.js](https://img.shields.io/badge/Node.js-18+-339933?style=flat-square&logo=nodedotjs&logoColor=white) (v18 or higher)
 * ![Expo](https://img.shields.io/badge/Expo_CLI-000020?style=flat-square&logo=expo&logoColor=white) 
