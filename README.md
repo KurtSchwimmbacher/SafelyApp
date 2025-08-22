@@ -196,8 +196,7 @@ Built with ❤️ by:
   
 ## Acknowledgements 
 Special thanks to:
-- **Vue.js** and the open-source community for powerful tools and documentation
-- **Microsoft .NET Team** for backend scalability support
-- **Code & Cloud Academy** lecturers and students for real-world testing and feedback
-- Contributors of [Electron](https://www.electronjs.org/) for enabling seamless cross-platform desktop apps
-- [Google Forms](https://forms.google.com) for collecting valuable user insights
+- **React Native & Expo** for providing the foundation to build and test cross-platform apps with ease.
+- **Firebase** for authentication, Firestore, and backend support.
+- **react-native-reanimated & react-native-svg** for enabling smooth animations and the custom wave effects.
+- Open-source contributors – whose libraries, guides, and shared knowledge made development faster and more enjoyable.
