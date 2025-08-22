@@ -83,7 +83,8 @@ Ensure you have the following installed before running the app:
 * ![Firebase CLI](https://img.shields.io/badge/Firebase_CLI-FFCA28?style=flat-square&logo=firebase&logoColor=black)
 
 > In order to make use of the SMS functionality with Twilio you will need to upgrade to the firestore Blaze Plan and add Cloud Functions to your project 
-
+> A second note is that you will need a Twilio account for the sms functionality to work and a .env file with Twilio SID, Token, and phone number linked.
+> if you don't want to set up twillio I do console log the message sending 
 ---
 ### 2.2 How to Install 
 1. Clone the repository:
@@ -129,7 +130,7 @@ Once a timer is active, the countdown screen displays the remaining time with an
 ---
 
 ## Demonstration 
-📹 Link to demo video: [Demo Video](https://drive.google.com/file/d/10KLjwpqMqiMYzO_2HIpNvMB4rxMOCKAp/view?usp=sharing)
+📹 Link to demo video: [Demo Video]([https://drive.google.com/file/d/10KLjwpqMqiMYzO_2HIpNvMB4rxMOCKAp/view?usp=sharing](https://drive.google.com/file/d/1PL75TUhcxyMy6YqxieeKrW-DU1f1sp7W/view?usp=sharing)
 
 --- 
 
