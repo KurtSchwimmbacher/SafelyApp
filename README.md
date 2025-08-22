@@ -128,8 +128,8 @@ Once a timer is active, the countdown screen displays the remaining time with an
 
 ---
 
-## Demonstration 📹 
-Link to demo video: [Demo Video](https://drive.google.com/file/d/10KLjwpqMqiMYzO_2HIpNvMB4rxMOCKAp/view?usp=sharing)
+## Demonstration 
+📹 Link to demo video: [Demo Video](https://drive.google.com/file/d/10KLjwpqMqiMYzO_2HIpNvMB4rxMOCKAp/view?usp=sharing)
 
 --- 
 
