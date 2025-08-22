@@ -175,8 +175,6 @@ Throughout the development of the CC School Management System
 | **Twilio integration** | Functionality to send SMS automatically in backend |
 | **Animated Waves**     | Precise Maths based functions to animate waves     |
 | **TimerSetup**         | Initially Draggable knob, PanGestureHandler difficulties meant this had to change |
-| **Assignment Course Relationship** | Fetching the relevent relationship details      |
-| **Assignment File Uploads** | Storing Filees in backend           |
 
 ## Roadmap & Future Implementations
 
