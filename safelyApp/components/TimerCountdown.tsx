@@ -25,7 +25,7 @@ const TimerCountdown: React.FC<TimerCountdownProps> = ({
   onTimerUpdated,
   onTimerDeleted,
 }) => {
-  const screenHeight = Dimensions.get('window').height - 150;
+  const screenHeight = Dimensions.get('window').height;
   const translateY = useSharedValue(0);
 
   useEffect(() => {
