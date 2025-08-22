@@ -36,6 +36,7 @@ const sendMissedCheckInNotification = async (contact: string, timerName: string)
   try {
     const message = `Alert: ${timerName ? `"${timerName}"` : 'Your timer'} missed a check-in!`;
     await sendSMS(contact, message);
+    console.log("Sending message " + message + "to "+contact);
   } catch (error) {
     console.error('Error sending notification:', error);
   }
