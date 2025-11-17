@@ -237,6 +237,8 @@ Key ideation points:
 
 Wireframes were created to map out the user flow and interface design. The focus was on simplicity and ease of use, ensuring that users could set up and manage their safety timers with minimal effort.
 
+![SafelyWireframes](./assets/SafelyWireframes.png)
+
 ### User-flow
 
 The user flow was designed to be straightforward:
@@ -375,7 +377,7 @@ This project was developed as part of a university course requirement and is cur
 
 ## License
 
-Distributed under the MIT License. See `LICENSE` for more information.
+Distributed under the MIT License. See License for details
 
 <!-- CONTACT -->
 
