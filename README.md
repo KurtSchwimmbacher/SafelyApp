@@ -1,14 +1,6 @@
 <br />
 
-![GitHub repo size](https://img.shields.io/github/repo-size/KurtSchwimmbacher/SafelyApp?color=%23000000)
-
-![GitHub watchers](https://img.shields.io/github/watchers/KurtSchwimmbacher/SafelyApp?color=%23000000)
-
-![GitHub language count](https://img.shields.io/github/languages/count/KurtSchwimmbacher/SafelyApp?color=%23000000)
-
-![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/KurtSchwimmbacher/SafelyApp?color=%23000000)
-
-[![Instagram][instagram-shield]][instagram-url]
+![GitHub repo size](https://img.shields.io/github/repo-size/KurtSchwimmbacher/SafelyApp?color=%23000000) ![GitHub watchers](https://img.shields.io/github/watchers/KurtSchwimmbacher/SafelyApp?color=%23000000) ![GitHub language count](https://img.shields.io/github/languages/count/KurtSchwimmbacher/SafelyApp?color=%23000000) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/KurtSchwimmbacher/SafelyApp?color=%23000000) [![Instagram][instagram-shield]][instagram-url]
 
 <!-- HEADER SECTION -->
 
@@ -54,7 +46,8 @@
 
 <!-- TABLE OF CONTENTS -->
 
-## Table of Contents
+<details>
+<summary><h2>Table of Contents</h2></summary>
 
 - [About the Project](#about-the-project)
 
@@ -111,6 +104,8 @@
 - [Contact](#contact)
 
 - [Acknowledgements](#acknowledgements)
+
+</details>
 
 <!--PROJECT DESCRIPTION-->
 
