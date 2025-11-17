@@ -14,7 +14,7 @@
 
 <p align="center">
   <a href="https://github.com/KurtSchwimmbacher/SafelyApp">
-    <img src="https://github.com/user-attachments/assets/11abfe05-711e-4ef1-b0e8-bed27ab93d9f" alt="Logo" width="140" height="140">
+    
   </a>
 
   <h3 align="center">SafelyApp</h3>
