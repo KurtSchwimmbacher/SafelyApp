@@ -4,11 +4,11 @@
 
 <!-- HEADER SECTION -->
 
-<h5 align="center" style="padding:0;margin:0;">Kurt Schwimmbacher</h5>
+<h3 align="center" style="padding:0;margin:0;">Kurt Schwimmbacher</h3>
 
-<h5 align="center" style="padding:0;margin:0;">231002</h5>
+<h3 align="center" style="padding:0;margin:0;">231002</h3>
 
-<h6 align="center">DV300 2025</h6>
+<h4 align="center">DV300 2025</h4>
 
 </br>
 
@@ -20,9 +20,6 @@
   <h3 align="center">SafelyApp</h3>
 
 A React Native + Expo app that helps users stay safe during activities by setting timers. If the user doesn't check in when the timer ends, alerts are sent to selected emergency contacts.
-<br>
-<a href="https://github.com/KurtSchwimmbacher/SafelyApp"><strong>Explore the docs »</strong></a>
-<br>
 <br>
 <a href="https://drive.google.com/file/d/1PL75TUhcxyMy6YqxieeKrW-DU1f1sp7W/view?usp=sharing">View Demo</a>
 ·
