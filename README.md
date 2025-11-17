@@ -6,41 +6,29 @@
 
 <h5 align="center" style="padding:0;margin:0;">Kurt Schwimmbacher</h5>
 
-<h5 align="center" style="padding:0;margin:0;">Student Number</h5>
+<h5 align="center" style="padding:0;margin:0;">231002</h5>
 
-<h6 align="center">Subject Name & Year</h6>
+<h6 align="center">DV300 2025</h6>
 
 </br>
 
 <p align="center">
-
   <a href="https://github.com/KurtSchwimmbacher/SafelyApp">
-
     <img src="https://github.com/user-attachments/assets/11abfe05-711e-4ef1-b0e8-bed27ab93d9f" alt="Logo" width="140" height="140">
-
   </a>
 
   <h3 align="center">SafelyApp</h3>
 
-  <p align="center">
-
-    A React Native + Expo app that helps users stay safe during activities by setting timers. If the user doesn't check in when the timer ends, alerts are sent to selected emergency contacts. <br>
-
-      <a href="https://github.com/KurtSchwimmbacher/SafelyApp"><strong>Explore the docs »</strong></a>
-
-   <br />
-
-   <br />
-
+A React Native + Expo app that helps users stay safe during activities by setting timers. If the user doesn't check in when the timer ends, alerts are sent to selected emergency contacts.
+<br>
+<a href="https://github.com/KurtSchwimmbacher/SafelyApp"><strong>Explore the docs »</strong></a>
+<br>
+<br>
 <a href="https://drive.google.com/file/d/1PL75TUhcxyMy6YqxieeKrW-DU1f1sp7W/view?usp=sharing">View Demo</a>
-
-    ·
-
-    <a href="https://github.com/KurtSchwimmbacher/SafelyApp/issues">Report Bug</a>
-
-    ·
-
-    <a href="https://github.com/KurtSchwimmbacher/SafelyApp/issues">Request Feature</a>
+·
+<a href="https://github.com/KurtSchwimmbacher/SafelyApp/issues">Report Bug</a>
+·
+<a href="https://github.com/KurtSchwimmbacher/SafelyApp/issues">Request Feature</a>
 
 </p>
 
