@@ -1,22 +1,32 @@
 import { onCall } from "firebase-functions/v2/https";
 import * as logger from "firebase-functions/logger";
+import { defineString } from "firebase-functions/params";
 import twilio, { Twilio } from "twilio";
-import * as functions from "firebase-functions";
 
-// ---- Helper to get Twilio config from Firebase Runtime Config or env vars ----
+// ---- Define Twilio config as string parameters (v2 way) ----
+const twilioSid = defineString("TWILIO_SID", {
+  default: "AC10dd58d14829569733b9d874f4835c51",
+});
+const twilioToken = defineString("TWILIO_TOKEN", {
+  default: "0c570d38274e15cf0e490c75279bf1ed",
+});
+const twilioPhone = defineString("TWILIO_PHONE", {
+  default: "+13142283381",
+});
+
+// ---- Helper to get Twilio config ----
 const getTwilioConfig = () => {
-  const config = functions.config();
-  const accountSid = config.twilio?.sid || process.env.TWILIO_SID;
-  const authToken = config.twilio?.token || process.env.TWILIO_TOKEN;
-  const twilioPhone = config.twilio?.phone || process.env.TWILIO_PHONE;
+  const accountSid = twilioSid.value();
+  const authToken = twilioToken.value();
+  const phone = twilioPhone.value();
 
-  if (!accountSid || !authToken || !twilioPhone) {
+  if (!accountSid || !authToken || !phone) {
     throw new Error(
       "Twilio environment variables are missing! Make sure TWILIO_SID, TWILIO_TOKEN, and TWILIO_PHONE are set."
     );
   }
 
-  return { accountSid, authToken, twilioPhone };
+  return { accountSid, authToken, twilioPhone: phone };
 };
 
 // ---- Types ----
