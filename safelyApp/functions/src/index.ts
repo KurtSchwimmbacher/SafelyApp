@@ -1,22 +1,23 @@
 import { onCall } from "firebase-functions/v2/https";
 import * as logger from "firebase-functions/logger";
 import twilio, { Twilio } from "twilio";
-import * as dotenv from "dotenv";
+import * as functions from "firebase-functions";
 
-dotenv.config();
+// ---- Helper to get Twilio config from Firebase Runtime Config or env vars ----
+const getTwilioConfig = () => {
+  const config = functions.config();
+  const accountSid = config.twilio?.sid || process.env.TWILIO_SID;
+  const authToken = config.twilio?.token || process.env.TWILIO_TOKEN;
+  const twilioPhone = config.twilio?.phone || process.env.TWILIO_PHONE;
 
-// ---- Load Twilio config from environment variables ----
-const accountSid = process.env.TWILIO_SID;
-const authToken = process.env.TWILIO_TOKEN;
-const twilioPhone = process.env.TWILIO_PHONE;
+  if (!accountSid || !authToken || !twilioPhone) {
+    throw new Error(
+      "Twilio environment variables are missing! Make sure TWILIO_SID, TWILIO_TOKEN, and TWILIO_PHONE are set."
+    );
+  }
 
-if (!accountSid || !authToken || !twilioPhone) {
-  throw new Error(
-    "Twilio environment variables are missing! Make sure TWILIO_SID, TWILIO_TOKEN, and TWILIO_PHONE are set."
-  );
-}
-
-const client: Twilio = twilio(accountSid, authToken);
+  return { accountSid, authToken, twilioPhone };
+};
 
 // ---- Types ----
 interface SafetyAlertRequest {
@@ -58,13 +59,17 @@ export const sendSafetyAlert = onCall(
         return { success: false, error: "Missing phoneNumber or message" };
       }
 
+      // Get Twilio config (from Runtime Config or env vars)
+      const { accountSid, authToken, twilioPhone } = getTwilioConfig();
+      const client: Twilio = twilio(accountSid, authToken);
+
       const sanitizedNumber = sanitizePhoneNumber(data.phoneNumber);
 
       logger.info("Sanitized phone number:", sanitizedNumber);
 
       const response = await client.messages.create({
         body: data.message,
-        from: twilioPhone!,
+        from: twilioPhone,
         to: sanitizedNumber,
       });
 
